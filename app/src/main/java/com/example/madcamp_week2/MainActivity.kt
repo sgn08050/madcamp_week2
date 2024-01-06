@@ -1,9 +1,11 @@
 package com.example.madcamp_week2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -37,11 +39,20 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.madcamp_week2.serverInterface.ResponseDC
+import com.example.madcamp_week2.serverInterface.components.loginPost
+import com.example.madcamp_week2.serverInterface.loginInformation
+import com.example.madcamp_week2.serverInterface.serverAPIInterface
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 //import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import middleTitleTextStyle
 import plainTextStyle
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
@@ -65,6 +76,11 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun LoginScreen() {
+
+
+    var idValue = remember{ mutableStateOf("")}
+    var passwordValue = remember{ mutableStateOf("")}
+    var loginState = remember{ mutableStateOf(false)}
 
     Box(
         modifier = Modifier
@@ -105,10 +121,9 @@ fun LoginScreen() {
                                 text = "아이디",
                                 style = plainTextStyle
                             )
-                            var text by remember { mutableStateOf(TextFieldValue()) }
                             TextField(
-                                value = text,
-                                onValueChange = { newId -> text = newId},
+                                value = idValue.value,
+                                onValueChange = { newId -> idValue.value = newId },
                                 label = { Text(
                                     text = "아이디를 입력하세요",
                                     style = plainTextStyle
@@ -128,10 +143,9 @@ fun LoginScreen() {
                                 text = "비밀번호",
                                 style = plainTextStyle
                             )
-                            var text by remember { mutableStateOf(TextFieldValue()) }
                             TextField(
-                                value = text,
-                                onValueChange = { newId -> text = newId},
+                                value = passwordValue.value,
+                                onValueChange = { newId -> passwordValue.value = newId},
                                 label = { Text(
                                     text = "비밀번호를 입력하세요",
                                     style = plainTextStyle
@@ -151,10 +165,12 @@ fun LoginScreen() {
                         modifier = Modifier
                             .padding( top = 50.dp)
                     ){
+
                         Button(
-                            onClick = { },
+                            onClick = { loginState.value = true},
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                ,
                             interactionSource = remember { MutableInteractionSource() }) {
                             Text("로그인 하기")
                         }
@@ -172,4 +188,9 @@ fun LoginScreen() {
         }
     }
 
+    // If loginState changes true, post the data.
+    if (loginState.value){
+        loginPost(loginInformation = loginInformation(idValue.value, passwordValue.value))
+        loginState.value = false;
+    }
 }
