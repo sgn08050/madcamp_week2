@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,13 +62,28 @@ class HomeActivity : ComponentActivity() {
     }
 }
 
+@Preview
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen() {
     LazyColumn (
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(TotalBackgroundColor),
+            .background(TotalBackgroundColor)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFD0C1B9), Color.Transparent),
+                    startY = 0.0f,
+                    endY = 300.0f
+                )
+            )
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFD0C1B9), Color.Transparent),
+                    startY = 0.0f,
+                    endY = 300.0f
+                )
+            )
     ) {
         item {
             AppLogo()
@@ -217,7 +233,15 @@ fun CrewCard() {
     Column(
         modifier = Modifier
             .padding(8.dp)
+            .padding(bottom = 20.dp)
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.)
+        ) {
+
+        }
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = WhiteBox
@@ -236,7 +260,11 @@ fun CrewCard() {
                     colors = ButtonDefaults.buttonColors(Color.White),
                     modifier = Modifier
                 ) {
-                    Text(text = ">")
+                    Text(
+                        text = ">",
+                        style = plainTextStyle,
+                        color = Black
+                    )
                 }
             }
             Row (
