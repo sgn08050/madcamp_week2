@@ -1,9 +1,11 @@
 package com.example.madcamp_week2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -39,6 +41,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.madcamp_week2.serverInterface.ResponseDC
+import com.example.madcamp_week2.serverInterface.components.loginPost
+import com.example.madcamp_week2.serverInterface.loginInformation
+import com.example.madcamp_week2.serverInterface.serverAPIInterface
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -51,6 +57,11 @@ import com.example.madcamp_week2.ui.theme.WhiteBox
 //import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import middleTitleTextStyle
 import plainTextStyle
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
@@ -63,6 +74,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val navController = rememberNavController()
+
 
                     NavHost(navController = navController, startDestination = "Login" ) {
                         composable("Login") {
@@ -80,4 +92,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
