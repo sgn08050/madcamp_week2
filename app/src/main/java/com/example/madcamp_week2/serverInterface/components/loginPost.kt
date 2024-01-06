@@ -1,6 +1,7 @@
 package com.example.madcamp_week2.serverInterface.components
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import com.example.madcamp_week2.serverInterface.ResponseDC
 import com.example.madcamp_week2.serverInterface.loginInformation
 import com.example.madcamp_week2.serverInterface.serverAPIInterface
@@ -11,7 +12,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
-fun loginPost(loginInformation: loginInformation){
+fun loginPost(loginInformation: loginInformation, navController: NavController){
+
     val url = "http://172.10.8.235"
 
     val retrofit = Retrofit
@@ -25,7 +27,9 @@ fun loginPost(loginInformation: loginInformation){
     server.postRequest(loginInformation).enqueue(object : Callback<ResponseDC> {
         override fun onResponse(call: Call<ResponseDC>, response: Response<ResponseDC>) {
             if (response.isSuccessful) {
+                navController.navigate("Home")
             } else {
+
             }
         }
         override fun onFailure(call: Call<ResponseDC>, t: Throwable) {

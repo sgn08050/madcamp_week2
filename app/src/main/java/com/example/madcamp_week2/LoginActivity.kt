@@ -34,6 +34,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.madcamp_week2.serverInterface.components.loginPost
+import com.example.madcamp_week2.serverInterface.loginInformation
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
@@ -61,6 +63,12 @@ class LoginActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavHostController) {
+
+    var idValue = remember{ mutableStateOf("")}
+    var passwordValue = remember{ mutableStateOf("")}
+    var loginState = remember{ mutableStateOf(false)}
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,8 +113,8 @@ fun LoginScreen(navController: NavHostController) {
                             )
                             var text by remember { mutableStateOf(TextFieldValue()) }
                             TextField(
-                                value = text,
-                                onValueChange = { newId -> text = newId},
+                                value = idValue.value,
+                                onValueChange = { newId -> idValue.value = newId},
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(50.dp),
@@ -123,8 +131,8 @@ fun LoginScreen(navController: NavHostController) {
                             )
                             var text by remember { mutableStateOf(TextFieldValue()) }
                             TextField(
-                                value = text,
-                                onValueChange = { newId -> text = newId},
+                                value = passwordValue.value,
+                                onValueChange = { newId -> passwordValue.value = newId},
                                 label = { Text(
                                     text = "",
                                     style = plainTextStyle
@@ -144,10 +152,7 @@ fun LoginScreen(navController: NavHostController) {
                             .padding( top = 30.dp)
                     ){
                         Button(
-                            onClick = {
-                                      // for test
-                                      // navController.navigate("Home")
-                            },
+                            onClick = {loginState.value = true},
                             modifier = Modifier
                                 .fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
@@ -171,6 +176,12 @@ fun LoginScreen(navController: NavHostController) {
                 }
             }
         }
+    }
+
+    // If loginState changes true, post the data and navigate to other page.
+    if (loginState.value){
+        loginPost(loginInformation = loginInformation(idValue.value, passwordValue.value), navController)
+        loginState.value = false
     }
 
 }
