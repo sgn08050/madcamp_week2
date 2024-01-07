@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CornerSize
@@ -21,15 +23,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +51,12 @@ import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import com.example.madcamp_week2.ui.theme.WhiteBox
 import plainTextStyle
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.font.FontWeight
+import com.example.madcamp_week2.ui.theme.ProgressedRed
+import com.example.madcamp_week2.ui.theme.UnProgressedGray
+import middleTitleTextStyle
+import smallPlainTextStyle
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,18 +74,28 @@ class HomeActivity : ComponentActivity() {
     }
 }
 
+//navController: NavHostController
+
+// @Preview
 @Composable
 fun HomeScreen(navController: NavHostController) {
     LazyColumn (
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(TotalBackgroundColor),
+            .background(TotalBackgroundColor)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFD0C1B9), Color.Transparent),
+                    startY = 0.0f,
+                    endY = 300.0f
+                )
+            )
     ) {
         item {
             AppLogo()
             TotalIncome()
-            CrewBar()
+            CrewBar(navController)
             AddSpending()
             AddIncome()
         }
@@ -125,7 +148,7 @@ fun TotalIncome() {
 }
 
 @Composable
-fun CrewBar() {
+fun CrewBar(navController: NavHostController) {
     Column {
         Row (
             modifier = Modifier
@@ -136,6 +159,15 @@ fun CrewBar() {
                 text = "내 모임",
                 style = bigTitleTextStyle
             )
+            Button(onClick = { navController.navigate("CrewAdd") },
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+            ) {
+                Text(text = "+",
+                    style = plainTextStyle,
+                    color = Black)
+            }
         }
         LazyRow (
             modifier = Modifier
@@ -214,10 +246,18 @@ fun AddIncome() {
 
 @Composable
 fun CrewCard() {
+    val navController = rememberNavController()
     Column(
         modifier = Modifier
             .padding(8.dp)
+            .padding(bottom = 20.dp)
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+        }
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = WhiteBox
@@ -232,11 +272,15 @@ fun CrewCard() {
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
-                    onClick = { },
+                    onClick = { navController.navigate("Home") },
                     colors = ButtonDefaults.buttonColors(Color.White),
                     modifier = Modifier
+                        .height(35.dp)
                 ) {
-                    Text(text = ">")
+                    Text(
+                        text = ">",
+                        color = Black
+                    )
                 }
             }
             Row (
@@ -245,6 +289,83 @@ fun CrewCard() {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(text = "배민과 천생연분인 사람들")
+            }
+            Row(modifier = Modifier
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircleProgress()
+            }
+        }
+    }
+}
+
+@Composable
+fun CircleProgress() {
+    //var progress by remember { mutableStateOf(0f) }
+    var progress = 0.5f
+    Box (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(
+                progress = progress,
+                modifier = Modifier
+                    .size(150.dp),
+                color = ProgressedRed,
+                strokeWidth = 7.dp,
+            )
+        }
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    text = "95,847",
+                    style = middleTitleTextStyle
+                )
+                Text(
+                    text = " 원",
+                    style = plainTextStyle
+                )
+                Text(text = "남음",
+                    style = smallPlainTextStyle,
+                    modifier = Modifier
+                        .padding(horizontal = 2.dp),
+                )
+            }
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    text = "총 ",
+                    style = smallPlainTextStyle,
+                    color = UnProgressedGray
+                )
+                Text(
+                    text = "400,000",
+                    style = smallPlainTextStyle,
+                    color = UnProgressedGray
+                )
+                Text(text = "원 목표",
+                    style = smallPlainTextStyle,
+                    color = UnProgressedGray,
+                    modifier = Modifier
+                        .padding(horizontal = 2.dp),
+                )
             }
         }
     }
