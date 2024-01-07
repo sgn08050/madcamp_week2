@@ -21,8 +21,19 @@
             android:theme="@style/Theme.MadCamp_week2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="oauth"
+                    android:scheme="kakao167d1f1e87c01a84febc3aa3793db41b" />
             </intent-filter>
         </activity>
     </application>
