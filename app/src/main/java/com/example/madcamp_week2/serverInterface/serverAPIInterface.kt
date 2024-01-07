@@ -6,5 +6,8 @@ import retrofit2.http.*
 data class ResponseDC(var result: String? = null)
 interface serverAPIInterface {
     @POST("/register/")
-    fun postRequest(@Body loginInformation: loginInformation): Call<ResponseDC>
+    fun postRegisterRequest(@Body loginInformation: loginInformation): Call<ResponseDC>
+
+    @POST("/login/kakao/")
+    fun postKakaoLoginRequest(@Body loginInformation: loginInformation): Call<ResponseDC>
 }
