@@ -29,8 +29,20 @@ class MainActivity : ComponentActivity() {
                         composable("Home") {
                             HomeScreen(navController =  navController)
                         }
-                        composable("CrewAdd") {
+                        composable("CrewNameAdd") {
                             CrewName(navController = navController)
+                        }
+                        composable("CrewDesAdd") {
+                            CrewDes(navController = navController)
+                        }
+                        composable("CrewTagAdd") {
+                            CrewTag(navController = navController)
+                        }
+                        composable("CrewTarAdd") {
+                            CrewTar(navController = navController)
+                        }
+                        composable("CrewPeopleAdd") {
+                            CrewPeople(navController = navController)
                         }
                     }
                 }
