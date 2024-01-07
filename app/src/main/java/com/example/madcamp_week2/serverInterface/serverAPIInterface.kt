@@ -8,6 +8,9 @@ interface serverAPIInterface {
     @POST("/register/")
     fun postRegisterRequest(@Body loginInformation: loginInformation): Call<ResponseDC>
 
+    @POST("/login/app")
+    fun postAppLoginRequest(@Body loginInformation: loginInformation): Call<ResponseDC>
+
     @POST("/login/kakao/")
     fun postKakaoLoginRequest(@Body loginInformation: loginInformation): Call<ResponseDC>
 }
