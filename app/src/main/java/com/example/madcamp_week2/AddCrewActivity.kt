@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.madcamp_week2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -15,6 +18,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,14 +32,23 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
+import plainTextStyle
 
 class AddCrewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +69,7 @@ class AddCrewActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrewName(navController: NavHostController) {
+    var crewName by remember { mutableStateOf("") }
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -67,7 +84,7 @@ fun CrewName(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = {  },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -86,8 +103,8 @@ fun CrewName(navController: NavHostController) {
                 .padding(top = 30.dp)
         )
         TextField(
-            value = "",
-            onValueChange = {},
+            value = crewName,
+            onValueChange = { crewName = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
@@ -100,7 +117,7 @@ fun CrewName(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("CrewDesAdd") },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -112,7 +129,8 @@ fun CrewName(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewDes() {
+fun CrewDes(navController: NavHostController) {
+    var crewDes by remember { mutableStateOf("") }
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -127,7 +145,7 @@ fun CrewDes() {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = {  },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -146,8 +164,8 @@ fun CrewDes() {
                 .padding(top = 30.dp)
         )
         TextField(
-            value = "",
-            onValueChange = {},
+            value = crewDes,
+            onValueChange = { crewDes = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
@@ -160,7 +178,7 @@ fun CrewDes() {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("CrewTagAdd") },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -170,11 +188,14 @@ fun CrewDes() {
     }
 }
 
-@Preview
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CrewTag() {
-    Column (
+fun CrewTag(navController: NavHostController) {
+
+    var buttonList by remember { mutableStateOf(listOf<String>()) }
+    var personalTag by remember { mutableStateOf("") }
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -188,7 +209,7 @@ fun CrewTag() {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = {  },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -206,7 +227,7 @@ fun CrewTag() {
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -215,24 +236,115 @@ fun CrewTag() {
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 ),
                 modifier = Modifier
-                    .size(width = 314.dp, height = 77.dp)
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp)
+                    .height(60.dp),
+            ) {
+                LazyRow {
+                    items(buttonList) { buttonLabel ->
+                        Button(
+                            onClick = { buttonList = buttonList.toMutableList().apply {
+                                remove(buttonLabel)
+                            } },
+                            modifier = Modifier
+                                .padding(5.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                            ) {
+                                Text(text = buttonLabel)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val keyboardController = LocalSoftwareKeyboardController.current
+        TextField (
+            value = personalTag,
+            placeholder = { Text(text = "사용자 정의 지출 태그 입력...") },
+            onValueChange = { personalTag = it},
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    buttonList = buttonList + "#$personalTag"
+                }
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+                .padding(horizontal = 30.dp)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp),
             ) {
-                Text(text = "포함된 지출")
-            }
-        }
-
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
-            modifier = Modifier
-                .size(width = 314.dp, height = 77.dp)
-                .padding(top = 10.dp)
-                .padding(horizontal = 30.dp)
-        ) {
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = { buttonList = buttonList + "#식비" },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        Text(text = "#식비")
+                    }
+                    Button(
+                        onClick = { buttonList = buttonList + "#교통비" },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        Text(text = "#교통비")
+                    }
+                    Button(
+                        onClick = { buttonList = buttonList + "#간식비" },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        Text(text = "#간식비")
+                    }
+                }
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = { buttonList = buttonList + "#꾸밈비" },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        Text(text = "#꾸밈비")
+                    }
+                    Button(
+                        onClick = { buttonList = buttonList + "#여가비" },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        Text(text = "#여가비")
+                    }
+                    Button(
+                        onClick = { buttonList = buttonList + "#생활비" },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                    ) {
+                        Text(text = "#생활비")
+                    }
+                }
             }
         }
         Row(
@@ -242,7 +354,7 @@ fun CrewTag() {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("CrewTarAdd") },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -250,27 +362,210 @@ fun CrewTag() {
             }
         }
     }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewDest() {
-    Column {
-        Text(text = "한 달에 얼마만 쓰고 싶나요?")
-        TextField(value = "", onValueChange = {})
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = "다음으로")
+fun CrewTar(navController: NavHostController) {
+    var crewDest by remember { mutableStateOf("") }
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(TotalBackgroundColor)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp)
+                .padding(horizontal = 30.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    .height(35.dp)
+            ) {
+                Text(
+                    text = "뒤로가기",
+                    color = Color.Black
+                )
+            }
+        }
+        Text(
+            text = "한 달에 얼마만 쓰고 싶나요?",
+            style = middleTitleTextStyle,
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .padding(top = 30.dp)
+        )
+        TextField(
+            value = crewDest,
+            onValueChange = { crewDest = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+                .padding(horizontal = 30.dp)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = { navController.navigate("CrewPeopleAdd") },
+                modifier = Modifier
+                    .padding(horizontal = 30.dp)
+            ) {
+                Text(text = "다음으로")
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+// navController: NavHostController
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+
 @Composable
-fun CrewPeople() {
-    Column {
-        Text(text = "누구와 함께 아끼고 싶나요?")
-        TextField(value = "", onValueChange = {})
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = "다음으로")
+fun CrewPeople(navController: NavHostController) {
+    var crewPeople by remember { mutableStateOf(listOf("공영재","강민구","김수환", "김가연", "김윤서", "정민서")) }
+    var searchPeople by remember { mutableStateOf("") }
+    var filteredPeople by remember { mutableStateOf(crewPeople) }
+    var selectedPeople by remember { mutableStateOf(listOf<String>()) }
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(TotalBackgroundColor)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp)
+                .padding(horizontal = 30.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    .height(35.dp)
+            ) {
+                Text(
+                    text = "뒤로가기",
+                    color = Color.Black
+                )
+            }
+        }
+        Text(
+            text = "누구와 함께 아끼고 싶나요?",
+            style = middleTitleTextStyle,
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .padding(top = 30.dp)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp)
+                    .height(60.dp),
+            ) {
+                LazyRow {
+                    items(selectedPeople) { peopleLabel ->
+                        Button(
+                            onClick = { selectedPeople = selectedPeople.toMutableList().apply {
+                                remove(peopleLabel)
+                            } },
+                            modifier = Modifier
+                                .padding(5.dp)
+                        ) {
+                            Box (
+                                modifier = Modifier
+                                    .padding(4.dp)
+                            ) {
+                                Text(text = peopleLabel)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val keyboardController = LocalSoftwareKeyboardController.current
+        Row(
+            modifier = Modifier
+            .padding(horizontal = 30.dp)
+        ) {
+            TextField(
+                value = searchPeople,
+                onValueChange = {
+                    searchPeople = it
+                    filteredPeople = performSearch(it, crewPeople)
+                },
+                label = { Text("이름을 입력하세요") },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+        }
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(horizontal = 30.dp)
+                .padding(top = 10.dp),
+        ) {
+            LazyColumn {
+                items(filteredPeople) { person ->
+                    Button(
+                        onClick = { selectedPeople = selectedPeople + "$person" },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(text = "$person")
+                    }
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = {  },
+                modifier = Modifier
+                    .padding(horizontal = 30.dp)
+            ) {
+                Text(text = "다음으로")
+            }
         }
     }
+}
+
+fun performSearch(query: String, targetData: List<String>): List<String> {
+    val filteredData = targetData
+    return filteredData.filter { it.contains(query, ignoreCase = true) }
 }

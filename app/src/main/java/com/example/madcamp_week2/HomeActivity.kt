@@ -159,7 +159,7 @@ fun CrewBar(navController: NavHostController) {
                 text = "내 모임",
                 style = bigTitleTextStyle
             )
-            Button(onClick = { navController.navigate("CrewAdd") },
+            Button(onClick = { navController.navigate("CrewNameAdd") },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
@@ -185,6 +185,7 @@ fun CrewBar(navController: NavHostController) {
         }
     }
 }
+
 
 @Composable
 fun AddSpending() {
@@ -302,7 +303,7 @@ fun CrewCard() {
 
 @Composable
 fun CircleProgress() {
-    //var progress by remember { mutableStateOf(0f) }
+    // var progress by remember { mutableStateOf(0f) }
     var progress = 0.5f
     Box (
         modifier = Modifier
