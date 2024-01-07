@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.madcamp_week2.serverInterface.components.kakaoLogin
 import com.example.madcamp_week2.serverInterface.components.loginPost
 import com.example.madcamp_week2.serverInterface.loginInformation
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
@@ -67,6 +68,7 @@ fun LoginScreen(navController: NavHostController) {
     var idValue = remember{ mutableStateOf("")}
     var passwordValue = remember{ mutableStateOf("")}
     var loginState = remember{ mutableStateOf(false)}
+    var kakaoLoginState = remember{ mutableStateOf(false)}
 
 
     Box(
@@ -172,6 +174,18 @@ fun LoginScreen(navController: NavHostController) {
                             interactionSource = remember { MutableInteractionSource() }) {
                             Text("회원가입")
                         }
+
+                        Button(
+                            onClick = {kakaoLoginState.value = true},
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = PointBackground
+                            ),
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            Text("카카오톡으로 로그인하기")
+                        }
+
                     }
                 }
             }
@@ -182,6 +196,11 @@ fun LoginScreen(navController: NavHostController) {
     if (loginState.value){
         loginPost(loginInformation = loginInformation(idValue.value, passwordValue.value), navController)
         loginState.value = false
+    }
+
+    if(kakaoLoginState.value){
+        kakaoLogin(navController)
+        kakaoLoginState.value = false
     }
 
 }
