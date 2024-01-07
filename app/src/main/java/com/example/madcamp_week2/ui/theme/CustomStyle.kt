@@ -25,3 +25,8 @@ val bigPlainTextStyle = TextStyle(
     fontSize = 30.sp,
     color = Color.Black
 )
+
+val smallPlainTextStyle = TextStyle (
+    fontSize = 10.sp,
+    color = Color.Black
+)

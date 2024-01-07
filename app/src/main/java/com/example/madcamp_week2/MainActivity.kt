@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController =  navController)
                         }
                         composable("CrewAdd") {
-                            CrewAddScreen(navController = navController)
+                            CrewName(navController = navController)
                         }
                     }
                 }
