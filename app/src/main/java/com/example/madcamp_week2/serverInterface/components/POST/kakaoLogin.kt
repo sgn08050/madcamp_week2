@@ -1,4 +1,4 @@
-package com.example.madcamp_week2.serverInterface.components
+package com.example.madcamp_week2.serverInterface.components.POST
 
 import android.util.Log
 import androidx.compose.runtime.Composable

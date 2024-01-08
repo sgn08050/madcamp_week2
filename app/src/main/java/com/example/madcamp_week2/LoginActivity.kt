@@ -35,9 +35,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.madcamp_week2.ViewModel.memberViewModel
-import com.example.madcamp_week2.serverInterface.components.kakaoLogin
-import com.example.madcamp_week2.serverInterface.components.loginPost
-import com.example.madcamp_week2.serverInterface.components.registerPost
+import com.example.madcamp_week2.serverInterface.components.POST.kakaoLogin
+import com.example.madcamp_week2.serverInterface.components.POST.loginPost
+import com.example.madcamp_week2.serverInterface.components.POST.registerPost
 import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import com.example.madcamp_week2.ui.theme.PointBackground

@@ -59,19 +59,19 @@ class MainActivity : ComponentActivity() {
 
 
                         composable("CrewNameAdd") {
-                            CrewName(navController = navController)
+                            CrewName(navController = navController, memberViewModel)
                         }
                         composable("CrewDesAdd"){
-                            CrewDes(navController = navController)
+                            CrewDes(navController = navController, memberViewModel)
                         }
                         composable("CrewTagAdd") {
-                            CrewTag(navController = navController)
+                            CrewTag(navController = navController, memberViewModel)
                         }
                         composable("CrewTarAdd") {
-                            CrewTar(navController = navController)
+                            CrewTar(navController = navController, memberViewModel)
                         }
                         composable("CrewPeopleAdd") {
-                            CrewPeople(navController = navController)
+                            CrewPeople(navController = navController, memberViewModel)
                         }
                     }
                 }
