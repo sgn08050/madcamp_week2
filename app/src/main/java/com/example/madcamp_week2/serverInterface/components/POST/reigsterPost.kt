@@ -1,10 +1,10 @@
-package com.example.madcamp_week2.serverInterface.components
+package com.example.madcamp_week2.serverInterface.components.POST
 
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.LoginResponse
 import com.example.madcamp_week2.serverInterface.ResponseDC
 import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
 import com.example.madcamp_week2.serverInterface.serverAPIInterface
@@ -27,8 +27,8 @@ fun registerPost(loginInformation: loginInformation, navController: NavControlle
 
     var server = retrofit.create(serverAPIInterface::class.java)
 
-    server.postRegisterRequest(loginInformation).enqueue(object : Callback<ResponseDC> {
-        override fun onResponse(call: Call<ResponseDC>, response: Response<ResponseDC>) {
+    server.postRegisterRequest(loginInformation).enqueue(object : Callback<LoginResponse> {
+        override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
             if (response.isSuccessful) {
                 response.body()?.let{
                         responseBody ->
@@ -39,7 +39,7 @@ fun registerPost(loginInformation: loginInformation, navController: NavControlle
 
             }
         }
-        override fun onFailure(call: Call<ResponseDC>, t: Throwable) {
+        override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
         }
     })
 }
