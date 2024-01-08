@@ -1,9 +1,11 @@
 package com.example.madcamp_week2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +20,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,7 +61,9 @@ import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import com.example.madcamp_week2.ui.theme.WhiteBox
 import plainTextStyle
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import com.example.madcamp_week2.ui.theme.ProgressedRed
 import com.example.madcamp_week2.ui.theme.UnProgressedGray
 import middleTitleTextStyle
@@ -75,7 +86,6 @@ class HomeActivity : ComponentActivity() {
 }
 
 //navController: NavHostController
-
 // @Preview
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -96,8 +106,8 @@ fun HomeScreen(navController: NavHostController) {
             AppLogo()
             TotalIncome()
             CrewBar(navController)
-            AddSpending()
-            AddIncome()
+            AddSpending(navController)
+            AddIncome(navController)
         }
     }
 }
@@ -147,106 +157,9 @@ fun TotalIncome() {
     }
 }
 
+var cardDataList = mutableListOf<String>()
 @Composable
-fun CrewBar(navController: NavHostController) {
-    Column {
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp)
-        )   {
-            Text(
-                text = "내 모임",
-                style = bigTitleTextStyle
-            )
-            Button(onClick = { navController.navigate("CrewNameAdd") },
-                colors = ButtonDefaults.buttonColors(Color.White),
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-            ) {
-                Text(text = "+",
-                    style = plainTextStyle,
-                    color = Black)
-            }
-        }
-        LazyRow (
-            modifier = Modifier
-                .fillMaxWidth()
-        )   {
-            item {
-                CrewCard()
-            }
-            item {
-                CrewCard()
-            }
-            item {
-                CrewCard()
-            }
-        }
-    }
-}
-
-
-@Composable
-fun AddSpending() {
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 30.dp),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = WhiteBox,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
-
-        ) {
-            Text(
-                text = "지출 추가하기",
-                style = plainTextStyle,
-                modifier = Modifier
-                    .padding(30.dp)
-            )
-
-        }
-    }
-}
-
-@Composable
-fun AddIncome() {
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 15.dp),
-        verticalArrangement = Arrangement.Center,
-            ) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = WhiteBox,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
-
-        ) {
-            Text(
-                text = "자산 추가하기",
-                style = plainTextStyle,
-                modifier = Modifier
-                    .padding(30.dp)
-            )
-
-        }
-    }
-}
-
-@Composable
-fun CrewCard() {
+fun CrewCard(crewData: List<String>) {
     val navController = rememberNavController()
     Column(
         modifier = Modifier
@@ -289,20 +202,119 @@ fun CrewCard() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "배민과 천생연분인 사람들")
+                Text(text = crewData[0])
             }
             Row(modifier = Modifier
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CircleProgress()
+                CircleProgress(crewData)
             }
         }
     }
 }
 
 @Composable
-fun CircleProgress() {
+fun CrewBar(navController: NavHostController) {
+    Column {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(30.dp)
+        )   {
+            Text(
+                text = "내 모임",
+                style = bigTitleTextStyle
+            )
+            Button(onClick = { navController.navigate("CrewNameAdd") },
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+            ) {
+                Text(text = "+",
+                    style = plainTextStyle,
+                    color = Black)
+            }
+        }
+        Surface (
+            modifier = Modifier
+                .fillMaxWidth() ,
+            color = TotalBackgroundColor
+        ) {
+            LazyRow {
+                items(count = cardDataList.size) { index ->
+                    val crewData = cardDataList[index]
+                    var totalData = crewData
+                        .removeSurrounding("[", "]")
+                        .split(",")
+                        .map { it.trim() }
+                    CrewCard(crewData = totalData)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddSpending(navController: NavHostController) {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 15.dp),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = WhiteBox,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable{ navController.navigate("CrewTagAdd") }
+                .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
+        ) {
+            Text(
+                text = "자산 추가하기",
+                style = plainTextStyle,
+                modifier = Modifier
+                    .padding(30.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun AddIncome(navController: NavHostController) {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 15.dp),
+        verticalArrangement = Arrangement.Center,
+            ) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = WhiteBox,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable{ navController.navigate("CrewTagAdd") }
+                .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
+
+        ) {
+            Text(
+                text = "자산 추가하기",
+                style = plainTextStyle,
+                modifier = Modifier
+                    .padding(30.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CircleProgress(crewData: List<String>) {
     // var progress by remember { mutableStateOf(0f) }
     var progress = 0.5f
     Box (
@@ -357,7 +369,7 @@ fun CircleProgress() {
                     color = UnProgressedGray
                 )
                 Text(
-                    text = "400,000",
+                    text = crewData[3],
                     style = smallPlainTextStyle,
                     color = UnProgressedGray
                 )

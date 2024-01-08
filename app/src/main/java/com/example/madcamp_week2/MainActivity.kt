@@ -44,6 +44,9 @@ class MainActivity : ComponentActivity() {
                         composable("CrewPeopleAdd") {
                             CrewPeople(navController = navController)
                         }
+                        composable("SendAdd") {
+                            CrewPeople(navController = navController)
+                        }
                     }
                 }
             }
