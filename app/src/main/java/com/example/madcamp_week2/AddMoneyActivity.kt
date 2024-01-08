@@ -1,6 +1,7 @@
 package com.example.madcamp_week2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -41,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigPlainTextStyle
+import bigTitleTextStyle
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 import plainTextStyle
@@ -58,10 +60,13 @@ class AddMoneyActivity : ComponentActivity() {
     }
 }
 
+
+var totalMoneyInt: Int = totalMoney.toInt()
+
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-@Preview
+
 @Composable
-fun AddSpendingMoney() {
+fun AddSpendingMoney(navController: NavHostController) {
     var buttonList by remember { mutableStateOf(listOf<String>()) }
     Column(
         modifier = Modifier
@@ -69,6 +74,7 @@ fun AddSpendingMoney() {
             .fillMaxHeight()
             .background(TotalBackgroundColor)
     ) {
+        var spendMoney by remember { mutableStateOf("") }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,7 +83,7 @@ fun AddSpendingMoney() {
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = {  },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -88,6 +94,13 @@ fun AddSpendingMoney() {
                 )
             }
         }
+        Text(
+            text = "지출 추가하기",
+            style = bigTitleTextStyle,
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .padding(top = 30.dp)
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,7 +110,6 @@ fun AddSpendingMoney() {
             horizontalArrangement = Arrangement.Center
         ) {
             Column {
-                var spendMoney by remember { mutableStateOf("") }
                 TextField(
                     value = spendMoney,
                     onValueChange = { spendMoney = it },
@@ -257,8 +269,16 @@ fun AddSpendingMoney() {
                 .padding(top = 10.dp),
             horizontalArrangement = Arrangement.End
         ) {
+            val spendMoneyInt: Int = if (spendMoney.isNotEmpty()) {
+                spendMoney.toInt()
+            } else {
+                0
+            }
             Button(
                 onClick = {
+                    totalMoneyInt -= spendMoneyInt
+                    totalMoney = totalMoneyInt.toString()
+                    navController.navigate("Home")
                 },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -271,13 +291,14 @@ fun AddSpendingMoney() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddIncomeMoney() {
+fun AddIncomeMoney(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(TotalBackgroundColor)
     ) {
+        var incomeMoney by remember { mutableStateOf("") }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -286,7 +307,7 @@ fun AddIncomeMoney() {
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = {  },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -306,13 +327,12 @@ fun AddIncomeMoney() {
             horizontalArrangement = Arrangement.Center
         ) {
             Column {
-                var incomeMoney by remember { mutableStateOf("") }
                 TextField(
                     value = incomeMoney,
                     onValueChange = { incomeMoney = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
-                    placeholder = { Text(text = "얼마를 사용했나요?") },
+                    placeholder = { Text(text = "얼마를 자산에 추가할까요?") },
                 )
             }
             Column (
@@ -331,9 +351,17 @@ fun AddIncomeMoney() {
                 .padding(top = 10.dp),
             horizontalArrangement = Arrangement.End
         ) {
+            val incomeMoneyInt: Int = if (incomeMoney.isNotEmpty()) {
+                incomeMoney.toInt()
+            } else {
+                0
+            }
             Button(
                 onClick = {
-                },
+                    totalMoneyInt += incomeMoneyInt
+                    totalMoney = totalMoneyInt.toString()
+                    navController.navigate("Home")
+                          },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
