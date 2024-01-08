@@ -168,7 +168,10 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                         }
 
                         Button(
-                            onClick = { registerState.value = true },
+                            onClick = {
+                                registerState.value = true
+                                navController.navigate("IDPWCreate")
+                                      },
                             modifier = Modifier
                                 .fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
