@@ -41,8 +41,8 @@ class MainActivity : ComponentActivity() {
                         composable("CrewNameAdd") {
                             CrewName(navController = navController)
                         }
-                        composable("CrewDesAdd/{crewName}", arguments = listOf(navArgument("crewName") { type = NavType.StringType})) {
-                            entry -> CrewDes(navController = navController, entry.arguments?.getString("crewName") ?: "")
+                        composable("CrewDesAdd"){
+                            CrewDes(navController = navController)
                         }
                         composable("CrewTagAdd") {
                             CrewTag(navController = navController)
