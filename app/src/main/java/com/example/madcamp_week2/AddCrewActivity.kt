@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -68,9 +69,12 @@ class AddCrewActivity : ComponentActivity() {
 // navController: NavHostController
 // navController.popBackStack()
 
+var cardData = mutableListOf<String>()
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrewName(navController: NavHostController) {
+    cardData = remember { mutableListOf() }
     var crewName by remember { mutableStateOf("") }
 
     Column (
@@ -84,7 +88,7 @@ fun CrewName(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(top = 30.dp)
                 .padding(horizontal = 30.dp),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
             Button(
                 onClick = { navController.popBackStack() },
@@ -121,6 +125,7 @@ fun CrewName(navController: NavHostController) {
         ) {
             Button(
                 onClick = { navController.navigate("CrewDesAdd/$crewName") },
+
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -146,7 +151,7 @@ fun CrewDes(navController: NavHostController, crewName: String) {
                 .fillMaxWidth()
                 .padding(top = 30.dp)
                 .padding(horizontal = 30.dp),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
             Button(
                 onClick = { navController.popBackStack() },
@@ -183,6 +188,7 @@ fun CrewDes(navController: NavHostController, crewName: String) {
         ) {
             Button(
                 onClick = { assetsgroupInformationState = true },
+
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -197,6 +203,7 @@ fun CrewDes(navController: NavHostController, crewName: String) {
     }
 }
 
+var TagList = mutableListOf<String>()
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CrewTag(navController: NavHostController) {
@@ -215,7 +222,7 @@ fun CrewTag(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(top = 30.dp)
                 .padding(horizontal = 30.dp),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
             Button(
                 onClick = { navController.popBackStack() },
@@ -282,6 +289,7 @@ fun CrewTag(navController: NavHostController) {
                 onDone = {
                     keyboardController?.hide()
                     buttonList = buttonList + "#$personalTag"
+                    TagList += "$personalTag"
                 }
             ),
             modifier = Modifier
@@ -363,7 +371,10 @@ fun CrewTag(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { navController.navigate("CrewTarAdd") },
+                onClick = {
+                    navController.navigate("CrewTarAdd")
+                    cardData.add(buttonList.toString())
+                          },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -389,7 +400,7 @@ fun CrewTar(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(top = 30.dp)
                 .padding(horizontal = 30.dp),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
             Button(
                 onClick = { navController.popBackStack() },
@@ -410,14 +421,24 @@ fun CrewTar(navController: NavHostController) {
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
-        TextField(
-            value = crewDest,
-            onValueChange = { crewDest = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp)
-                .padding(horizontal = 30.dp)
-        )
+        Column {
+            TextField(
+                value = crewDest,
+                onValueChange = { crewDest = it },
+                modifier = Modifier
+                    .padding(end = 10.dp),
+                placeholder = { Text(text = "금액 입력") },
+            )
+        }
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "원",
+                style = middleTitleTextStyle
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -425,7 +446,10 @@ fun CrewTar(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { navController.navigate("CrewPeopleAdd") },
+                onClick = {
+                    navController.navigate("CrewPeopleAdd")
+                    cardData.add(crewDest)
+                          },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -455,7 +479,7 @@ fun CrewPeople(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(top = 30.dp)
                 .padding(horizontal = 30.dp),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
             Button(
                 onClick = { navController.popBackStack() },
@@ -564,7 +588,11 @@ fun CrewPeople(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = {  },
+                onClick = {
+                    navController.navigate("Home")
+                    cardData.add(selectedPeople.toString())
+                    cardDataList.add(cardData.toString())
+                          },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
