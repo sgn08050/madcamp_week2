@@ -1,5 +1,6 @@
 package com.example.madcamp_week2
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -121,6 +122,7 @@ fun AppLogo() {
     }
 }
 
+var totalMoney = "아직 설정하지 않았습니다"
 @Composable
 fun TotalIncome() {
     Column {
@@ -146,7 +148,7 @@ fun TotalIncome() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "4,395,847원",
+                    text = totalMoney,
                     style = bigPlainTextStyle,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -186,16 +188,16 @@ fun CrewCard(crewData: List<String>) {
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
-                    onClick = { navController.navigate("Home") },
+                    onClick = {
+                        navController.navigate("Login")
+                        Log.d("눌리나요","눌리ㅏ느나얼님랑")
+                    },
                     colors = ButtonDefaults.buttonColors(Color.White),
-                    modifier = Modifier
-                        .height(35.dp)
+                    modifier = Modifier.height(35.dp)
                 ) {
-                    Text(
-                        text = ">",
-                        color = Black
-                    )
+                    Text(text = ">", color = Black)
                 }
+
             }
             Row (
                 modifier = Modifier
@@ -248,6 +250,7 @@ fun CrewBar(navController: NavHostController) {
                         .removeSurrounding("[", "]")
                         .split(",")
                         .map { it.trim() }
+                    // totalData는 ArrayList임
                     CrewCard(crewData = totalData)
                 }
             }
@@ -271,11 +274,12 @@ fun AddSpending(navController: NavHostController) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{ navController.navigate("CrewTagAdd") }
+                .clickable{ navController.navigate("SpendAdd")
+                }
                 .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
         ) {
             Text(
-                text = "자산 추가하기",
+                text = "지출 추가하기",
                 style = plainTextStyle,
                 modifier = Modifier
                     .padding(30.dp)
@@ -299,7 +303,7 @@ fun AddIncome(navController: NavHostController) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{ navController.navigate("CrewTagAdd") }
+                .clickable{ navController.navigate("IncomeAdd") }
                 .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
 
         ) {

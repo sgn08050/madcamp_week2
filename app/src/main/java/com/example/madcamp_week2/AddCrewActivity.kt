@@ -127,8 +127,7 @@ fun CrewName(navController: NavHostController) {
                 onClick = {
                     navController.navigate("CrewDesAdd")
                     cardData.add(crewName)
-                          },
-
+                },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -192,9 +191,9 @@ fun CrewDes(navController: NavHostController) {
             Button(
                 onClick = {
                     assetsgroupInformationState = true
+                    navController.navigate("CrewTagAdd")
                     cardData.add(crewDes)
-                          },
-
+                },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -205,12 +204,11 @@ fun CrewDes(navController: NavHostController) {
 
     if(assetsgroupInformationState){
         assetsgroupPost(assetsgroupInformation(assetsgroupname = cardData[0], assetsgroupgoal = crewDes), navController)
-        assetsgroupInformationState = false
     }
 }
 
 var TagList = mutableListOf<String>()
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CrewTag(navController: NavHostController) {
 
@@ -391,6 +389,7 @@ fun CrewTag(navController: NavHostController) {
 }
 
 
+//navController: NavHostController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrewTar(navController: NavHostController) {
@@ -427,23 +426,37 @@ fun CrewTar(navController: NavHostController) {
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
-        Column {
-            TextField(
-                value = crewDest,
-                onValueChange = { crewDest = it },
-                modifier = Modifier
-                    .padding(end = 10.dp),
-                placeholder = { Text(text = "금액 입력") },
-            )
-        }
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp)
+            .padding(horizontal = 30.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "원",
-                style = middleTitleTextStyle
-            )
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+            ) {
+                TextField(
+                    value = crewDest,
+                    onValueChange = { crewDest = it },
+                    modifier = Modifier
+                        .padding(end = 10.dp),
+                    placeholder = { Text(text = "금액 입력") },
+                )
+            }
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "원",
+                    style = middleTitleTextStyle
+                )
+            }
         }
         Row(
             modifier = Modifier
