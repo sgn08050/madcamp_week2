@@ -46,6 +46,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
+import com.example.madcamp_week2.serverInterface.components.assetsgroupPost
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 import plainTextStyle
@@ -70,6 +72,7 @@ class AddCrewActivity : ComponentActivity() {
 @Composable
 fun CrewName(navController: NavHostController) {
     var crewName by remember { mutableStateOf("") }
+
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -117,7 +120,7 @@ fun CrewName(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { navController.navigate("CrewDesAdd") },
+                onClick = { navController.navigate("CrewDesAdd/$crewName") },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
@@ -129,8 +132,9 @@ fun CrewName(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewDes(navController: NavHostController) {
+fun CrewDes(navController: NavHostController, crewName: String) {
     var crewDes by remember { mutableStateOf("") }
+    var assetsgroupInformationState by remember { mutableStateOf(false)}
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -178,13 +182,18 @@ fun CrewDes(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { navController.navigate("CrewTagAdd") },
+                onClick = { assetsgroupInformationState = true },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
                 Text(text = "다음으로")
             }
         }
+    }
+
+    if(assetsgroupInformationState){
+        assetsgroupPost(assetsgroupInformation(assetsgroupname = crewName, assetsgroupgoal = crewDes), navController)
+        assetsgroupInformationState = false
     }
 }
 
