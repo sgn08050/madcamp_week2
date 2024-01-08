@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.madcamp_week2.serverInterface.components.kakaoLogin
 import com.example.madcamp_week2.serverInterface.components.loginPost
+import com.example.madcamp_week2.serverInterface.components.registerPost
 import com.example.madcamp_week2.serverInterface.loginInformation
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import com.example.madcamp_week2.ui.theme.PointBackground
@@ -68,6 +69,7 @@ fun LoginScreen(navController: NavHostController) {
     var idValue = remember{ mutableStateOf("")}
     var passwordValue = remember{ mutableStateOf("")}
     var loginState = remember{ mutableStateOf(false)}
+    var registerState = remember{ mutableStateOf(false)}
     var kakaoLoginState = remember{ mutableStateOf(false)}
 
 
@@ -165,7 +167,7 @@ fun LoginScreen(navController: NavHostController) {
                         }
 
                         Button(
-                            onClick = { navController.navigate("Home") },
+                            onClick = { registerState.value = true },
                             modifier = Modifier
                                 .fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
@@ -195,6 +197,11 @@ fun LoginScreen(navController: NavHostController) {
     // If loginState changes true, post the data and navigate to other page.
     if (loginState.value){
         loginPost(loginInformation = loginInformation(idValue.value, passwordValue.value), navController)
+        loginState.value = false
+    }
+
+    if (registerState.value){
+        registerPost(loginInformation = loginInformation(idValue.value, passwordValue.value), navController)
         loginState.value = false
     }
 
