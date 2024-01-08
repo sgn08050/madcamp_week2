@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.example.madcamp_week2.serverInterface.loginInformation
+import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
@@ -12,7 +13,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
 @Composable
-fun kakaoLogin(navController: NavController){
+fun kakaoLogin(navController: NavController, memberViewModel: memberViewModel){
 
     // login with kakaoaccount
     val context = LocalContext.current
@@ -29,7 +30,7 @@ fun kakaoLogin(navController: NavController){
                     Log.d("login", "fail error")
                 }
                 else if (user != null) {
-                    kakaoLoginPost(loginInformation = loginInformation(user.kakaoAccount?.profile?.nickname.toString(), user.id.toString()), navController = navController)
+                    kakaoLoginPost(loginInformation = loginInformation(user.kakaoAccount?.profile?.nickname.toString(), user.id.toString()), navController = navController, memberViewModel)
                 }
             }
 
