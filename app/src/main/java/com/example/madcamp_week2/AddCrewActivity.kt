@@ -469,6 +469,7 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
             Button(
                 onClick = {
                     addGroup = true
+                    navController.navigate("CrewPeopleAdd")
                     cardData.add(crewDest)
                           },
                 modifier = Modifier
@@ -551,7 +552,6 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                     items(selectedPeople) { peopleLabel ->
                         Button(
                             onClick = {
-                                Log.d("coffee", "now here")
                                 selectedPeople = selectedPeople.toMutableList().apply {
                                 remove(peopleLabel)
                             } },

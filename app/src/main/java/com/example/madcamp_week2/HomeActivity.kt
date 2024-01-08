@@ -161,8 +161,7 @@ fun TotalIncome() {
 
 var cardDataList = mutableListOf<String>()
 @Composable
-fun CrewCard(crewData: List<String>) {
-    val navController = rememberNavController()
+fun CrewCard(navController: NavController, crewData: List<String>) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -189,8 +188,7 @@ fun CrewCard(crewData: List<String>) {
             ) {
                 Button(
                     onClick = {
-                        navController.navigate("Login")
-                        Log.d("눌리나요","눌리ㅏ느나얼님랑")
+                        navController.navigate("EachCrewCard")
                     },
                     colors = ButtonDefaults.buttonColors(Color.White),
                     modifier = Modifier.height(35.dp)
@@ -251,7 +249,7 @@ fun CrewBar(navController: NavHostController) {
                         .split(",")
                         .map { it.trim() }
                     // totalData는 ArrayList임
-                    CrewCard(crewData = totalData)
+                    CrewCard(navController = navController, crewData = totalData)
                 }
             }
         }
