@@ -124,7 +124,10 @@ fun CrewName(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { navController.navigate("CrewDesAdd/$crewName") },
+                onClick = {
+                    navController.navigate("CrewDesAdd")
+                    cardData.add(crewName)
+                          },
 
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -137,7 +140,7 @@ fun CrewName(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewDes(navController: NavHostController, crewName: String) {
+fun CrewDes(navController: NavHostController) {
     var crewDes by remember { mutableStateOf("") }
     var assetsgroupInformationState by remember { mutableStateOf(false)}
     Column (
@@ -187,7 +190,10 @@ fun CrewDes(navController: NavHostController, crewName: String) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { assetsgroupInformationState = true },
+                onClick = {
+                    assetsgroupInformationState = true
+                    cardData.add(crewDes)
+                          },
 
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -198,7 +204,7 @@ fun CrewDes(navController: NavHostController, crewName: String) {
     }
 
     if(assetsgroupInformationState){
-        assetsgroupPost(assetsgroupInformation(assetsgroupname = crewName, assetsgroupgoal = crewDes), navController)
+        assetsgroupPost(assetsgroupInformation(assetsgroupname = cardData[0], assetsgroupgoal = crewDes), navController)
         assetsgroupInformationState = false
     }
 }
