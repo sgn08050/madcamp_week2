@@ -2,6 +2,7 @@
 
 package com.example.madcamp_week2
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -32,6 +32,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,19 +40,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.madcamp_week2.ViewModel.memberViewModel
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
-import com.example.madcamp_week2.serverInterface.components.assetsgroupPost
+import com.example.madcamp_week2.serverInterface.classComponents.categoryInformation
+import com.example.madcamp_week2.serverInterface.components.GET.getAllMembers
+import com.example.madcamp_week2.serverInterface.components.POST.assetsgroupPost
+import com.example.madcamp_week2.serverInterface.components.POST.assetsgroupmemberpairPost
+import com.example.madcamp_week2.serverInterface.components.POST.categoryPost
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
-import plainTextStyle
 
 class AddCrewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +72,11 @@ class AddCrewActivity : ComponentActivity() {
 // navController.popBackStack()
 
 var cardData = mutableListOf<String>()
+var crewPeople = mutableStateOf(listOf<String>())
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewName(navController: NavHostController) {
+fun CrewName(navController: NavHostController, memberViewModel: memberViewModel) {
     cardData = remember { mutableListOf() }
     var crewName by remember { mutableStateOf("") }
 
@@ -125,8 +128,8 @@ fun CrewName(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
-                    navController.navigate("CrewDesAdd")
                     cardData.add(crewName)
+                    navController.navigate("CrewDesAdd")
                           },
 
                 modifier = Modifier
@@ -140,9 +143,9 @@ fun CrewName(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewDes(navController: NavHostController) {
+fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) {
     var crewDes by remember { mutableStateOf("") }
-    var assetsgroupInformationState by remember { mutableStateOf(false)}
+
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -191,8 +194,8 @@ fun CrewDes(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
-                    assetsgroupInformationState = true
                     cardData.add(crewDes)
+                    navController.navigate("CrewTagAdd")
                           },
 
                 modifier = Modifier
@@ -202,17 +205,12 @@ fun CrewDes(navController: NavHostController) {
             }
         }
     }
-
-    if(assetsgroupInformationState){
-        assetsgroupPost(assetsgroupInformation(assetsgroupname = cardData[0], assetsgroupgoal = crewDes), navController)
-        assetsgroupInformationState = false
-    }
 }
 
 var TagList = mutableListOf<String>()
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CrewTag(navController: NavHostController) {
+fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) {
 
     var buttonList by remember { mutableStateOf(listOf<String>()) }
     var personalTag by remember { mutableStateOf("") }
@@ -295,7 +293,6 @@ fun CrewTag(navController: NavHostController) {
                 onDone = {
                     keyboardController?.hide()
                     buttonList = buttonList + "#$personalTag"
-                    TagList += "$personalTag"
                 }
             ),
             modifier = Modifier
@@ -379,7 +376,8 @@ fun CrewTag(navController: NavHostController) {
             Button(
                 onClick = {
                     navController.navigate("CrewTarAdd")
-                    cardData.add(buttonList.toString())
+                    TagList.addAll(buttonList)
+                    cardData.add(TagList.toString())
                           },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -393,8 +391,9 @@ fun CrewTag(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrewTar(navController: NavHostController) {
+fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) {
     var crewDest by remember { mutableStateOf("") }
+    var addGroup by remember { mutableStateOf(false)}
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -453,7 +452,7 @@ fun CrewTar(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
-                    navController.navigate("CrewPeopleAdd")
+                    addGroup = true
                     cardData.add(crewDest)
                           },
                 modifier = Modifier
@@ -463,17 +462,29 @@ fun CrewTar(navController: NavHostController) {
             }
         }
     }
+
+    if (addGroup){
+        getAllMembers(crewPeople)
+        TagList.forEach{
+                tag -> categoryPost(categoryInformation(tag), navController)
+        }
+        assetsgroupPost(assetsgroupInformation(assetsgroupname = cardData[0], assetsgroupgoal = cardData[1]), navController, memberViewModel = memberViewModel)
+        addGroup = false
+    }
+
 }
 
 // navController: NavHostController
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 
 @Composable
-fun CrewPeople(navController: NavHostController) {
-    var crewPeople by remember { mutableStateOf(listOf("공영재","강민구","김수환", "김가연", "김윤서", "정민서")) }
+fun CrewPeople(navController: NavHostController, memberViewModel: memberViewModel) {
+
     var searchPeople by remember { mutableStateOf("") }
-    var filteredPeople by remember { mutableStateOf(crewPeople) }
+    var filteredPeople by remember {mutableStateOf(crewPeople)}
     var selectedPeople by remember { mutableStateOf(listOf<String>()) }
+    var addDatabaseState by remember {mutableStateOf(false)}
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -523,7 +534,9 @@ fun CrewPeople(navController: NavHostController) {
                 LazyRow {
                     items(selectedPeople) { peopleLabel ->
                         Button(
-                            onClick = { selectedPeople = selectedPeople.toMutableList().apply {
+                            onClick = {
+                                Log.d("coffee", "now here")
+                                selectedPeople = selectedPeople.toMutableList().apply {
                                 remove(peopleLabel)
                             } },
                             modifier = Modifier
@@ -549,7 +562,7 @@ fun CrewPeople(navController: NavHostController) {
                 value = searchPeople,
                 onValueChange = {
                     searchPeople = it
-                    filteredPeople = performSearch(it, crewPeople)
+                    filteredPeople.value = performSearch(it, crewPeople.value)
                 },
                 label = { Text("이름을 입력하세요") },
                 keyboardOptions = KeyboardOptions(
@@ -576,7 +589,7 @@ fun CrewPeople(navController: NavHostController) {
                 .padding(top = 10.dp),
         ) {
             LazyColumn {
-                items(filteredPeople) { person ->
+                items(filteredPeople.value) { person ->
                     Button(
                         onClick = { selectedPeople = selectedPeople + "$person" },
                         modifier = Modifier
@@ -595,6 +608,7 @@ fun CrewPeople(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
+                    addDatabaseState = true
                     navController.navigate("Home")
                     cardData.add(selectedPeople.toString())
                     cardDataList.add(cardData.toString())
@@ -605,6 +619,13 @@ fun CrewPeople(navController: NavHostController) {
                 Text(text = "다음으로")
             }
         }
+    }
+
+    if(addDatabaseState){
+        selectedPeople.forEach{
+            people -> assetsgroupmemberpairPost(navController, memberViewModel, people)
+        }
+        addDatabaseState = false
     }
 }
 
