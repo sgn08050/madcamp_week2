@@ -97,7 +97,6 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
             Button(
                 onClick = {
                     navController.popBackStack()
-                    cardData.removeAt(cardData.size - 1)
                           },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier

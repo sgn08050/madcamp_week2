@@ -195,7 +195,7 @@ fun CalculateMoney(crewData: List<String>) : List<Float> {
     var UsedMoney = crewData[crewData.size - 1].toInt()
 
     var RemainMoney = TarMoney - UsedMoney
-    var RemainMoneyRate = (UsedMoney/TarMoney).toFloat()
+    var RemainMoneyRate = UsedMoney.toFloat()/TarMoney.toFloat()
 
     return listOf(RemainMoney.toFloat(), RemainMoneyRate)
 }

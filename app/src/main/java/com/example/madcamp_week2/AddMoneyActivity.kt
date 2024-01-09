@@ -46,6 +46,7 @@ import bigTitleTextStyle
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 import plainTextStyle
+import smallPlainTextStyle
 
 class AddMoneyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,8 +140,19 @@ fun AddSpendingMoney(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(top = 10.dp)
                     .padding(horizontal = 30.dp)
-                    .height(60.dp),
+                    .height(80.dp),
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()) {
+                    Text(
+                        text = "선택된 지출 태그",
+                        style = smallPlainTextStyle,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .padding(start = 10.dp)
+                    )
+                }
                 LazyRow {
                     items(buttonList) { buttonLabel ->
                         Button(
@@ -258,8 +270,19 @@ fun AddSpendingMoney(navController: NavHostController) {
                     .padding(top = 10.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp)
-                    .height(60.dp),
+                    .height(80.dp),
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()) {
+                    Text(
+                        text = "사용자 태그",
+                        style = smallPlainTextStyle,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .padding(start = 10.dp)
+                    )
+                }
                 LazyRow {
                     items(usrTagList) { tagLabel ->
                         Button(

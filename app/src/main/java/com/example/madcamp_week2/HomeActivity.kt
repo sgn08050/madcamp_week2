@@ -318,6 +318,8 @@ fun AddIncome(navController: NavHostController) {
 @Composable
 fun CircleProgress(crewData: List<String>) {
     // var progress by remember { mutableStateOf(0f) }
+
+    Log.d("test","${CalculateMoney(crewData)[1]}")
     Box (
         modifier = Modifier
             .fillMaxSize()
