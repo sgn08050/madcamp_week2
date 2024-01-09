@@ -118,7 +118,7 @@ fun CrewCardName(crewData:List<String>?) {
 }
 
 @Composable
-fun CrewCardMoney(crewData:List<String>?) {
+fun CrewCardMoney(crewData:List<String>) {
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -135,7 +135,7 @@ fun CrewCardMoney(crewData:List<String>?) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "95,847",
+                    text = "${CalculateMoney(crewData = crewData)[0].toInt()}",
                     style = bigTitleTextStyle
                 )
                 Text(
@@ -155,9 +155,8 @@ fun CrewCardMoney(crewData:List<String>?) {
                 .padding(horizontal = 30.dp)
                 .padding(top = 10.dp)
         ) {
-            var progress by remember { mutableStateOf(0.5f) }
-            var markerPosition by remember { mutableStateOf(0.7f) }
-            LinearProgressBar(progress = progress, markerPosition = markerPosition)
+            var progress = CalculateMoney(crewData = crewData)[1]
+            LinearProgressBar(progress = progress)
         }
         Row(
             modifier = Modifier
@@ -191,8 +190,19 @@ fun CrewCardMoney(crewData:List<String>?) {
     }
 }
 
+fun CalculateMoney(crewData: List<String>) : List<Float> {
+    var TarMoney = crewData.get(3).toIntOrNull() ?: 300000
+    var UsedMoney = crewData[crewData.size - 1].toInt()
+
+    var RemainMoney = TarMoney - UsedMoney
+    var RemainMoneyRate = (UsedMoney/TarMoney).toFloat()
+
+    return listOf(RemainMoney.toFloat(), RemainMoneyRate)
+}
+
+
 @Composable
-fun LinearProgressBar(progress: Float, markerPosition: Float) {
+fun LinearProgressBar(progress: Float) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

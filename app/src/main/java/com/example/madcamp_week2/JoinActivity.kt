@@ -202,11 +202,13 @@ fun UserIncome(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                // navController.navigate("CrewDesHome")
+                // navController jn.navigate("CrewDesHome")
                 onClick = {
-                    totalMoney = initialTotalMoney
+                    var moneyState = initialTotalMoney.toIntOrNull()
+                    if (initialTotalMoney.isEmpty() || moneyState == null) totalMoney = "0"
+                    else totalMoney = initialTotalMoney
                     navController.navigate("Home")
-                    },
+                },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {

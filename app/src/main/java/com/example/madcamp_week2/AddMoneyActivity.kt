@@ -64,9 +64,9 @@ class AddMoneyActivity : ComponentActivity() {
 var totalMoneyInt: Int = totalMoney.toInt()
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-
 @Composable
 fun AddSpendingMoney(navController: NavHostController) {
+    var spendMoney by remember { mutableStateOf("") }
     var buttonList by remember { mutableStateOf(listOf<String>()) }
     Column(
         modifier = Modifier
@@ -74,7 +74,6 @@ fun AddSpendingMoney(navController: NavHostController) {
             .fillMaxHeight()
             .background(TotalBackgroundColor)
     ) {
-        var spendMoney by remember { mutableStateOf("") }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -180,21 +179,30 @@ fun AddSpendingMoney(navController: NavHostController) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { buttonList = buttonList + "#식비" },
+                        onClick = {
+                            if (!buttonList.contains("#식비"))
+                                buttonList += "#식비"
+                        },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#식비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#교통비" },
+                        onClick = {
+                            if (!buttonList.contains("#교통비"))
+                                buttonList += "#교통비"
+                        },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#교통비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#간식비" },
+                        onClick = {
+                            if (!buttonList.contains("#간식비"))
+                                buttonList += "#간식비"
+                                  },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
@@ -206,21 +214,30 @@ fun AddSpendingMoney(navController: NavHostController) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { buttonList = buttonList + "#꾸밈비" },
+                        onClick = {
+                            if (!buttonList.contains("#꾸밈비"))
+                                buttonList += "#꾸밈비"
+                        },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#꾸밈비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#여가비" },
+                        onClick = {
+                            if (!buttonList.contains("#여가비"))
+                                buttonList += "#여가비"
+                        },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#여가비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#생활비" },
+                        onClick = {
+                            if (!buttonList.contains("#생활비"))
+                                buttonList += "#생활비"
+                        },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
@@ -244,11 +261,12 @@ fun AddSpendingMoney(navController: NavHostController) {
                     .height(60.dp),
             ) {
                 LazyRow {
-                    items(TagList) { tagLabel ->
+                    items(usrTagList) { tagLabel ->
                         Button(
-                            onClick = { TagList = TagList.toMutableList().apply {
-                                remove(tagLabel)
-                            } },
+                            onClick = {
+                                if (!buttonList.contains("$tagLabel"))
+                                    buttonList += "$tagLabel"
+                            },
                             modifier = Modifier
                                 .padding(5.dp)
                         ) {
@@ -278,6 +296,9 @@ fun AddSpendingMoney(navController: NavHostController) {
                 onClick = {
                     totalMoneyInt -= spendMoneyInt
                     totalMoney = totalMoneyInt.toString()
+
+                    CalculateMoneyTag(selectedTag = buttonList, spendMoneyInt)
+
                     navController.navigate("Home")
                 },
                 modifier = Modifier
@@ -286,6 +307,22 @@ fun AddSpendingMoney(navController: NavHostController) {
                 Text(text = "완료")
             }
         }
+    }
+}
+
+fun CalculateMoneyTag(selectedTag: List<String>, spendMoney: Int) {
+    var index = 0
+    for (eachCardData in cardDataList) {
+        var eachCardTag = eachCardData.get(2)
+        for (tag in selectedTag) {
+            if (eachCardTag.contains(tag)) {
+                var presentSpendMoney = eachCardData[eachCardData.size - 1].toInt()
+                presentSpendMoney  += spendMoney
+                eachCardData[eachCardData.size - 1] = presentSpendMoney.toString()
+                cardDataList[index] = eachCardData
+            }
+        }
+        index++
     }
 }
 

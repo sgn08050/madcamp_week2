@@ -318,7 +318,6 @@ fun AddIncome(navController: NavHostController) {
 @Composable
 fun CircleProgress(crewData: List<String>) {
     // var progress by remember { mutableStateOf(0f) }
-    var progress = 0.5f
     Box (
         modifier = Modifier
             .fillMaxSize()
@@ -332,7 +331,7 @@ fun CircleProgress(crewData: List<String>) {
             verticalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
-                progress = progress,
+                progress = CalculateMoney(crewData)[1],
                 modifier = Modifier
                     .size(150.dp),
                 color = ProgressedRed,
@@ -348,7 +347,7 @@ fun CircleProgress(crewData: List<String>) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "95,847",
+                    text = "${CalculateMoney(crewData = crewData)[0].toInt()}",
                     style = middleTitleTextStyle
                 )
                 Text(

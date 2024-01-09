@@ -54,6 +54,7 @@ import com.example.madcamp_week2.serverInterface.components.POST.assetsgroupmemb
 import com.example.madcamp_week2.serverInterface.components.POST.categoryPost
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
+import smallPlainTextStyle
 
 class AddCrewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +95,10 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    navController.popBackStack()
+                    cardData.removeAt(cardData.size - 1)
+                          },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -114,6 +118,7 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
         )
         TextField(
             value = crewName,
+            placeholder = { Text(text = "입력...") },
             onValueChange = { crewName = it },
             modifier = Modifier
                 .fillMaxWidth()
@@ -160,7 +165,10 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    navController.popBackStack()
+                    cardData.removeAt(cardData.size - 1)
+                          },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -172,7 +180,7 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
             }
         }
         Text(
-            text = "모임의 목적은 무엇인가요?",
+            text = "모임을 설명해주세요.",
             style = middleTitleTextStyle,
             modifier = Modifier
                 .padding(horizontal = 30.dp)
@@ -180,6 +188,7 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
         )
         TextField(
             value = crewDes,
+            placeholder = { Text(text = "입력...") },
             onValueChange = { crewDes = it },
             modifier = Modifier
                 .fillMaxWidth()
@@ -209,6 +218,7 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
 }
 
 var TagList = mutableListOf<String>()
+var usrTagList = mutableListOf<String>()
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) {
@@ -230,7 +240,10 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    navController.popBackStack()
+                    cardData.removeAt(cardData.size - 1)
+                          },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -260,8 +273,20 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                     .padding(top = 10.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp)
-                    .height(60.dp),
+                    .height(80.dp),
             ) {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "선택된 지출 태그",
+                        style = smallPlainTextStyle,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .padding(start = 10.dp)
+                    )
+                }
                 LazyRow {
                     items(buttonList) { buttonLabel ->
                         Button(
@@ -285,7 +310,11 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField (
             value = personalTag,
-            placeholder = { Text(text = "사용자 정의 지출 태그 입력...") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+                .padding(horizontal = 30.dp),
+            placeholder = { Text(text = "사용자 정의 지출 태그 추가...") },
             onValueChange = { personalTag = it},
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
@@ -293,14 +322,13 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
-                    if (!buttonList.contains("#$personalTag"))
+                    if (!buttonList.contains("#$personalTag")) {
                         buttonList += "#$personalTag"
+                        usrTagList += "#$personalTag"
+                        personalTag = ""
+                    }
                 }
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp)
-                .padding(horizontal = 30.dp)
+            )
         )
         Row(
             modifier = Modifier
@@ -366,8 +394,8 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                     }
                     Button(
                         onClick = {
-                            if (!buttonList.contains("#꾸밈비"))
-                                buttonList += "#꾸밈비"
+                            if (!buttonList.contains("#여가비"))
+                                buttonList += "#여가비"
                                   },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
@@ -386,6 +414,47 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                 }
             }
         }
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp)
+                .height(80.dp),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()) {
+                Text(
+                    text = "추가된 사용자 정의 태그",
+                    style = smallPlainTextStyle,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .padding(start = 10.dp)
+                    )
+            }
+            LazyRow {
+                items(usrTagList) { tagLabel ->
+                    Button(
+                        onClick = {
+                            if (!buttonList.contains("$tagLabel"))
+                                buttonList += "$tagLabel"
+                        },
+                        modifier = Modifier
+                            .padding(5.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                        ) {
+                            Text(text = tagLabel)
+                        }
+                    }
+                }
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -394,9 +463,9 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
         ) {
             Button(
                 onClick = {
-                    navController.navigate("CrewTarAdd")
                     TagList.addAll(buttonList)
-                    cardData.add(TagList.toString())
+                    cardData.add(buttonList.toString())
+                    navController.navigate("CrewTarAdd")
                           },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -427,7 +496,10 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    navController.popBackStack()
+                    cardData.removeAt(cardData.size - 1)
+                          },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -445,11 +517,18 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
+        Text(
+            text = "기본은 30만원 입니다.",
+            style = smallPlainTextStyle,
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .padding(top = 10.dp)
+        )
         Row(
             modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp)
-            .padding(horizontal = 30.dp),
+                .fillMaxWidth()
+                .padding(top = 30.dp)
+                .padding(horizontal = 30.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -464,7 +543,7 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
                     onValueChange = { crewDest = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
-                    placeholder = { Text(text = "금액 입력") },
+                    placeholder = { Text(text = "입력...") },
                 )
             }
             Column (
@@ -533,7 +612,10 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
             horizontalArrangement = Arrangement.Start
         ) {
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    navController.popBackStack()
+                    cardData.removeAt(cardData.size - 1)
+                          },
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .height(35.dp)
@@ -563,8 +645,19 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                     .padding(top = 10.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp)
-                    .height(60.dp),
+                    .height(80.dp),
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()) {
+                    Text(
+                        text = "함께할 친구",
+                        style = smallPlainTextStyle,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .padding(start = 10.dp)
+                    )
+                }
                 LazyRow {
                     items(selectedPeople) { peopleLabel ->
                         Button(
@@ -597,7 +690,7 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                     searchPeople = it
                     filteredPeople.value = performSearch(it, crewPeople.value)
                 },
-                label = { Text("이름을 입력하세요") },
+                label = { Text("이름 검색...") },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done
                 ),
@@ -641,10 +734,13 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
         ) {
             Button(
                 onClick = {
+                    cardData.add(selectedPeople.toString())
+                    cardData.add("0") // 지출한 금액 계산하기 위해 맨 마지막에 추가해주기
+
+                    cardDataList.add(cardData)
+
                     addDatabaseState = true
                     navController.navigate("Home")
-                    cardData.add(selectedPeople.toString())
-                    cardDataList.add(cardData)
                           },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
