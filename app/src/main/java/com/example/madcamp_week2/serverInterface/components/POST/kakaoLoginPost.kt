@@ -31,8 +31,9 @@ fun kakaoLoginPost(loginInformation: loginInformation, navController: NavControl
             if (response.isSuccessful) {
                 response.body()?.let { responseBody ->
                     responseBody.member_id?.let { memberViewModel.updateMember_id(it) }
+                    responseBody.id?.let{memberViewModel.updateId(it)}
                     responseBody.result?.let {
-                        if (it === "1") navController.navigate("MoneyCreate")
+                        if (it == "1") navController.navigate("MoneyCreate")
                         else navController.navigate("Home")
                     }
                 }
