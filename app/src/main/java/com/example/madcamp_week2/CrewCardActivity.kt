@@ -66,7 +66,7 @@ fun EachCrewCard(navController: NavHostController) {
                 )
         ) {
             item {
-                CrewCardName(groupInformation.value)
+                CrewCardName(navController, groupInformation.value)
                 CrewCardMoney(groupInformation.value)
             }
         }
@@ -74,7 +74,7 @@ fun EachCrewCard(navController: NavHostController) {
 
 
 @Composable
-fun CrewCardName(assetsgroupInformation: assetsgroupInformation) {
+fun CrewCardName(navController: NavHostController, assetsgroupInformation: assetsgroupInformation) {
     Column (
         modifier = Modifier
             .padding(horizontal = 30.dp)
@@ -180,7 +180,7 @@ fun CrewCardMoney(assetsgroupInformation: assetsgroupInformation) {
                 .padding(horizontal = 30.dp)
                 .padding(top = 20.dp)
         ) {
-            var progress = CalculateMoney(crewData = crewData)[1]
+            var progress = CalculateMoney(assetsgroupInformation.targetasset, assetsgroupInformation.currentasset)[1]
             LinearProgressBar(progress = progress)
         }
         Row(
@@ -215,14 +215,11 @@ fun CrewCardMoney(assetsgroupInformation: assetsgroupInformation) {
     }
 }
 
-fun CalculateMoney(crewData: List<String>) : List<Float> {
-    var TarMoney = crewData.get(3).toIntOrNull() ?: 300000
-    var UsedMoney = crewData[crewData.size - 1].toInt()
+fun CalculateMoney(TarMoney:Int, RemainMoney: Int) : List<Float> {
 
-    var RemainMoney = TarMoney - UsedMoney
-    var RemainMoneyRate = UsedMoney.toFloat()/TarMoney.toFloat()
+    var RemainMoneyRate = (TarMoney - RemainMoney).toFloat()/TarMoney.toFloat()
 
-    return listOf(RemainMoney.toFloat(), RemainMoneyRate)
+    return listOf((TarMoney - RemainMoney).toFloat(), RemainMoneyRate)
 }
 
 

@@ -242,9 +242,9 @@ var groupInformation = mutableStateOf(assetsgroupInformation("", "", "", "", emp
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun CrewBar(navController: NavHostController) {
+fun CrewBar(navController: NavHostController, memberViewModel: memberViewModel) {
   
-  getAllGroups(memberViewModel, myAssetsGroups, check)
+    getAllGroups(memberViewModel, myAssetsGroups, check)
     if(check.value) {
     Column {
         Row (
@@ -414,7 +414,7 @@ fun AddIncome(navController: NavHostController) {
 }
 
 @Composable
-fun CircleProgress(crewData: List<String>) {
+fun CircleProgress(crewData: assetsgroupInformation) {
     // var progress by remember { mutableStateOf(0f) }
 
     Box (
@@ -430,7 +430,7 @@ fun CircleProgress(crewData: List<String>) {
             verticalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
-                progress = CalculateMoney(crewData)[1],
+                progress = CalculateMoney(crewData.targetasset, crewData.currentasset)[1],
                 modifier = Modifier
                     .size(150.dp),
                 color = ProgressedRed,
@@ -446,7 +446,7 @@ fun CircleProgress(crewData: List<String>) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = groupInformation.currentasset.toString(),
+                    text = crewData.currentasset.toString(),
 
                     style = middleTitleTextStyle
                 )
@@ -470,7 +470,7 @@ fun CircleProgress(crewData: List<String>) {
                     color = UnProgressedGray
                 )
                 Text(
-                    text = groupInformation.targetasset.toString(),
+                    text = crewData.targetasset.toString(),
                     style = smallPlainTextStyle,
                     color = UnProgressedGray
                 )
