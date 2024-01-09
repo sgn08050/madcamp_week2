@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +24,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -62,10 +66,16 @@ import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import com.example.madcamp_week2.ui.theme.WhiteBox
 import plainTextStyle
 import androidx.compose.runtime.*
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.navigation.ActivityNavigator
+import com.example.madcamp_week2.ui.theme.Brown40
 import com.example.madcamp_week2.ui.theme.ProgressedRed
 import com.example.madcamp_week2.ui.theme.UnProgressedGray
 import middleTitleTextStyle
@@ -148,13 +158,22 @@ fun TotalIncome() {
                     .padding(bottom = 20.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = totalMoney,
-                    style = bigPlainTextStyle,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .background(PointBackground)
-                )
+                Row {
+                    Text(
+                        text = totalMoney,
+                        style = bigPlainTextStyle,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .background(PointBackground)
+                    )
+                    Text(
+                        text = " 원",
+                        style = bigTitleTextStyle,
+                        modifier = Modifier
+                            .background(PointBackground)
+                    )
+
+                }
             }
         }
     }
@@ -236,6 +255,8 @@ fun CrewBar(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(Color.White),
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
+                    .background(color = Color.White, shape = CircleShape)
+                    .border(2.dp, PointBackground, shape = CircleShape)
             ) {
                 Text(text = "+",
                     style = plainTextStyle,
@@ -244,14 +265,40 @@ fun CrewBar(navController: NavHostController) {
         }
         Surface (
             modifier = Modifier
-                .fillMaxWidth() ,
-            color = TotalBackgroundColor
+                .fillMaxWidth()
         ) {
-            LazyRow {
-                items(count = cardDataList.size) { index ->
-                    val crewData = cardDataList[index]
-                    // totalData는 ArrayList임
-                    CrewCard(navController = navController, crewData = crewData)
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Canvas(
+                    modifier = Modifier
+                        .matchParentSize()
+                ) {
+                    val bigRectHeight = 140.dp
+                    val smallRectHeight = 15.dp
+                    clipRect {
+                        drawRect(
+                            color = TotalBackgroundColor,
+                            size = Size(size.width, size.height - bigRectHeight.toPx())
+                        )
+                        // 베이지색 도형 그리기
+                        drawRect(
+                            color = PointBackground,
+                            size = Size(size.width, bigRectHeight.toPx()),
+                            topLeft = Offset(0f, size.height - bigRectHeight.toPx())
+                        )
+                        // Y축 방향으로 이동하여 얇은 베이지색 도형 그리기
+                        drawRect(
+                            color = PointBackground,
+                            size = Size(size.width, smallRectHeight.toPx()),
+                            topLeft = Offset(0f, size.height - bigRectHeight.toPx() - 70f)  // Y축 방향으로 위로 이동
+                        )
+                    }
+                }
+                LazyRow {
+                    items(count = cardDataList.size) { index ->
+                        val crewData = cardDataList[index]
+                        // totalData는 ArrayList임
+                        CrewCard(navController = navController, crewData = crewData)
+                    }
                 }
             }
         }
@@ -259,6 +306,7 @@ fun CrewBar(navController: NavHostController) {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+//navController: NavController
 @Composable
 fun AddSpending(navController: NavController) {
     Column (
@@ -270,19 +318,40 @@ fun AddSpending(navController: NavController) {
     ) {
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = WhiteBox,
+                containerColor = Brown40,
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{ navController.navigate("SpendAdd") }
+                .clickable { navController.navigate("SpendAdd") }
                 .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
         ) {
-            Text(
-                text = "지출 추가하기",
-                style = plainTextStyle,
+            //navController.navigate("SpendAdd")
+            Row (
                 modifier = Modifier
-                    .padding(30.dp)
-            )
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)  // 첫 번째 Column이 남은 공간을 모두 차지하도록 합니다.
+                ) {
+                    Text(
+                        text = "지출 추가하기",
+                        style = plainTextStyle,
+                        modifier = Modifier
+                            .padding(30.dp)
+                    )
+                }
+                Column (
+                    modifier = Modifier
+                        .align(Alignment.Bottom)  // 두 번째 Column을 아래로 정렬하여 오른쪽 끝에 배치합니다.
+                ) {
+                    Text(
+                        text = ">",
+                        style = plainTextStyle,
+                        modifier = Modifier
+                            .padding(30.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -297,20 +366,40 @@ fun AddIncome(navController: NavHostController) {
             ) {
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = WhiteBox,
+                containerColor = Brown40,
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{ navController.navigate("IncomeAdd") }
+                .clickable { navController.navigate("IncomeAdd") }
                 .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
 
         ) {
-            Text(
-                text = "자산 추가하기",
-                style = plainTextStyle,
+            Row (
                 modifier = Modifier
-                    .padding(30.dp)
-            )
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)  // 첫 번째 Column이 남은 공간을 모두 차지하도록 합니다.
+                ) {
+                    Text(
+                        text = "자산 추가하기",
+                        style = plainTextStyle,
+                        modifier = Modifier
+                            .padding(30.dp)
+                    )
+                }
+                Column (
+                    modifier = Modifier
+                        .align(Alignment.Bottom)  // 두 번째 Column을 아래로 정렬하여 오른쪽 끝에 배치합니다.
+                ) {
+                    Text(
+                        text = ">",
+                        style = plainTextStyle,
+                        modifier = Modifier
+                            .padding(30.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -318,7 +407,8 @@ fun AddIncome(navController: NavHostController) {
 @Composable
 fun CircleProgress(crewData: List<String>) {
     // var progress by remember { mutableStateOf(0f) }
-    var progress = 0.5f
+
+    Log.d("test","${CalculateMoney(crewData)[1]}")
     Box (
         modifier = Modifier
             .fillMaxSize()
@@ -332,7 +422,7 @@ fun CircleProgress(crewData: List<String>) {
             verticalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
-                progress = progress,
+                progress = CalculateMoney(crewData)[1],
                 modifier = Modifier
                     .size(150.dp),
                 color = ProgressedRed,
@@ -348,7 +438,7 @@ fun CircleProgress(crewData: List<String>) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "95,847",
+                    text = "${CalculateMoney(crewData = crewData)[0].toInt()}",
                     style = middleTitleTextStyle
                 )
                 Text(

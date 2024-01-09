@@ -1,6 +1,7 @@
 package com.example.madcamp_week2
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,9 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigPlainTextStyle
@@ -52,7 +58,6 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun EachCrewCard(navController: NavHostController) {
-
     LazyColumn (
         modifier = Modifier
             .fillMaxWidth()
@@ -67,7 +72,7 @@ fun EachCrewCard(navController: NavHostController) {
             )
     ) {
         item {
-            CrewCardName(sendCrewData)
+            CrewCardName(sendCrewData, navController)
             CrewCardMoney(sendCrewData)
         }
     }
@@ -75,11 +80,36 @@ fun EachCrewCard(navController: NavHostController) {
 
 
 @Composable
-fun CrewCardName(crewData:List<String>?) {
+fun CrewCardName(crewData:List<String>?, navController: NavHostController) {
     Column (
         modifier = Modifier
             .padding(horizontal = 30.dp)
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp)
+                .padding(horizontal = 30.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Button(
+                onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(Color.White),
+                modifier = Modifier
+                    .height(35.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
+                )
+            }
+        }
         Text(
             text = crewData?.get(0).takeIf { it?.isNotBlank() == true } ?: "이름이 입력되지 않았습니다.",
             style = bigTitleTextStyle,
@@ -118,7 +148,7 @@ fun CrewCardName(crewData:List<String>?) {
 }
 
 @Composable
-fun CrewCardMoney(crewData:List<String>?) {
+fun CrewCardMoney(crewData:List<String>) {
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -126,7 +156,7 @@ fun CrewCardMoney(crewData:List<String>?) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp)
+                .padding(top = 20.dp)
                 .padding(horizontal = 30.dp),
             horizontalArrangement = Arrangement.Center
         ) {
@@ -135,7 +165,7 @@ fun CrewCardMoney(crewData:List<String>?) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "95,847",
+                    text = "${CalculateMoney(crewData = crewData)[0].toInt()}",
                     style = bigTitleTextStyle
                 )
                 Text(
@@ -153,11 +183,10 @@ fun CrewCardMoney(crewData:List<String>?) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp)
-                .padding(top = 10.dp)
+                .padding(top = 20.dp)
         ) {
-            var progress by remember { mutableStateOf(0.5f) }
-            var markerPosition by remember { mutableStateOf(0.7f) }
-            LinearProgressBar(progress = progress, markerPosition = markerPosition)
+            var progress = CalculateMoney(crewData = crewData)[1]
+            LinearProgressBar(progress = progress)
         }
         Row(
             modifier = Modifier
@@ -191,8 +220,19 @@ fun CrewCardMoney(crewData:List<String>?) {
     }
 }
 
+fun CalculateMoney(crewData: List<String>) : List<Float> {
+    var TarMoney = crewData.get(3).toIntOrNull() ?: 300000
+    var UsedMoney = crewData[crewData.size - 1].toInt()
+
+    var RemainMoney = TarMoney - UsedMoney
+    var RemainMoneyRate = UsedMoney.toFloat()/TarMoney.toFloat()
+
+    return listOf(RemainMoney.toFloat(), RemainMoneyRate)
+}
+
+
 @Composable
-fun LinearProgressBar(progress: Float, markerPosition: Float) {
+fun LinearProgressBar(progress: Float) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
