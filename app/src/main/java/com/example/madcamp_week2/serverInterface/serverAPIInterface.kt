@@ -1,5 +1,6 @@
 package com.example.madcamp_week2.serverInterface
 
+import com.example.madcamp_week2.serverInterface.classComponents.assetsInformation
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupmemberpair
 import com.example.madcamp_week2.serverInterface.classComponents.categoryInformation
@@ -28,6 +29,10 @@ data class MemberResponse(
 ) : ResponseDC()
 
 interface serverAPIInterface {
+
+    @POST("/register/idcheck")
+    fun postIdCheck(@Body loginInformation: loginInformation): Call<ResponseDC>
+
     @POST("/register/")
     fun postRegisterRequest(@Body loginInformation: loginInformation): Call<LoginResponse>
 
@@ -45,6 +50,9 @@ interface serverAPIInterface {
 
     @POST("/assetsgroupmemberpair/information")
     fun postAssetsGroupMemberPair(@Body assetsgroupmemberpair: assetsgroupmemberpair): Call<ResponseDC>
+
+    @POST("/register/assets")
+    fun postRegisterAssets(@Body assetsInformation: assetsInformation): Call<ResponseDC>
 
     @GET("/members/all")
     fun getAllMembers(): Call<List<MemberResponse>>

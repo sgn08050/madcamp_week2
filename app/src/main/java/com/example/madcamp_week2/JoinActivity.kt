@@ -1,5 +1,8 @@
 package com.example.madcamp_week2
 
+import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,16 +24,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigTitleTextStyle
+import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.classComponents.assetsInformation
+import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
+import com.example.madcamp_week2.serverInterface.components.POST.idCheckPost
+import com.example.madcamp_week2.serverInterface.components.POST.registerAssetsPost
+import com.example.madcamp_week2.serverInterface.components.POST.registerPost
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 
+var duplicateState = mutableStateOf(false) // 아이디 중복체크 성공여부 저장
+
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserInform(navController: NavHostController) {
+fun UserInform(navController: NavHostController, memberViewModel: memberViewModel) {
+
+    var userID by remember { mutableStateOf("") }
+    var userPW by remember { mutableStateOf("") }
+    var doubleCheckState by remember {mutableStateOf(false)}  // 아이디 중복 체크를 할 수 있으면 true, 아니면 false (onclick 변화)
+    var clickedState by remember {mutableStateOf(false)} // 아이디 중복 체크를 클릭했으면 true, 아니면 false
+    var completeState by remember {mutableStateOf(false)} // 다음으로 넘어갈 수 있으면 true, 아니면 false
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +84,6 @@ fun UserInform(navController: NavHostController) {
                 )
             }
             Column {
-                var userID by remember { mutableStateOf("") }
                 TextField(
                     value = userID,
                     onValueChange = { userID = it },
@@ -81,9 +100,10 @@ fun UserInform(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            var test = false
             Button(
-                onClick = { /* 중복체크 조건문 */ },
+                onClick = {
+                    doubleCheckState = true
+                          },
                 modifier = Modifier
             ) {
                 Text(
@@ -91,7 +111,14 @@ fun UserInform(navController: NavHostController) {
                 )
             }
             Text(
-                text = "테스트 테스트",
+                text =
+                if (clickedState) {
+                    if(duplicateState.value) "사용 가능한 아이디입니다."
+                    else "이미 사용중인 아이디입니다."
+                }
+                else{
+                    "아이디 중복 체크를 해주세요."
+                },
                 modifier = Modifier
                     .padding(start = 10.dp)
             )
@@ -116,7 +143,6 @@ fun UserInform(navController: NavHostController) {
                 )
             }
             Column {
-                var userPW by remember { mutableStateOf("") }
                 TextField(
                     value = userPW,
                     onValueChange = { userPW = it },
@@ -133,8 +159,7 @@ fun UserInform(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
-                    navController.navigate("Home")
-                    navController.navigate("MoneyCreate")
+                    completeState = true
                 },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
@@ -143,11 +168,29 @@ fun UserInform(navController: NavHostController) {
             }
         }
     }
+
+    // ID doubleCheck
+    if(doubleCheckState){
+        idCheckPost(loginInformation = loginInformation(userID, userPW, 0), duplicateState)
+        clickedState = true
+        doubleCheckState = false
+    }
+
+    // Register user in database
+    if (duplicateState.value && completeState){
+        registerPost(loginInformation(userID, userPW, 0), navController, memberViewModel)
+        duplicateState.value = false
+        completeState = false
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserIncome(navController: NavHostController) {
+fun UserIncome(navController: NavHostController, memberViewModel: memberViewModel) {
+
+    var initialTotalMoney by remember { mutableStateOf("") }
+    var registerState by remember{mutableStateOf(false)}
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -168,7 +211,7 @@ fun UserIncome(navController: NavHostController) {
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
-        var initialTotalMoney by remember { mutableStateOf("") }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -202,16 +245,30 @@ fun UserIncome(navController: NavHostController) {
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                // navController.navigate("CrewDesHome")
                 onClick = {
                     totalMoney = initialTotalMoney
-                    navController.navigate("Home")
+                    registerState = true
                     },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
                 Text(text = "다음으로")
             }
+        }
+    }
+
+    if(registerState){
+        var intInitialTotalMoney = initialTotalMoney.toIntOrNull()
+        if(intInitialTotalMoney == null){
+            Toast.makeText(LocalContext.current, "올바른 값을 입력해주세요.", Toast.LENGTH_SHORT)
+            registerState = false
+        }
+        else{
+            val member_id: String? = memberViewModel.member_id.value
+            member_id?.let{
+                registerAssetsPost(assetsInformation(it, intInitialTotalMoney, true), navController)
+            }
+            registerState = false
         }
     }
 }

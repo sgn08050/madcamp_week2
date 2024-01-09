@@ -37,7 +37,6 @@ import androidx.navigation.NavHostController
 import com.example.madcamp_week2.ViewModel.memberViewModel
 import com.example.madcamp_week2.serverInterface.components.POST.kakaoLogin
 import com.example.madcamp_week2.serverInterface.components.POST.loginPost
-import com.example.madcamp_week2.serverInterface.components.POST.registerPost
 import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
 import com.example.madcamp_week2.ui.theme.KakaoTalkLogin
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
@@ -71,7 +70,6 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
     var idValue = remember{ mutableStateOf("")}
     var passwordValue = remember{ mutableStateOf("")}
     var loginState = remember{ mutableStateOf(false)}
-    var registerState = remember{ mutableStateOf(false)}
     var kakaoLoginState = remember{ mutableStateOf(false)}
 
 
@@ -170,7 +168,6 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
 
                         Button(
                             onClick = {
-                                registerState.value = true
                                 navController.navigate("IDPWCreate")
                                       },
                             modifier = Modifier
@@ -201,13 +198,8 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
 
     // If loginState changes true, post the data and navigate to other page.
     if (loginState.value){
-        loginPost(loginInformation = loginInformation(idValue.value, passwordValue.value), navController, memberViewModel)
+        loginPost(loginInformation = loginInformation(idValue.value, passwordValue.value, 0), navController, memberViewModel)
         loginState.value = false
-    }
-
-    if (registerState.value){
-        registerPost(loginInformation = loginInformation(idValue.value, passwordValue.value), navController, memberViewModel)
-        registerState.value = false
     }
 
     if(kakaoLoginState.value){
