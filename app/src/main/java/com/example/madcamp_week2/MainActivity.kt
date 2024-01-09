@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("EachCrewCard") {
                             EachCrewCard(navController =  navController)
+                            //navController =  navController
                         }
 
                         composable("SpendAdd") {

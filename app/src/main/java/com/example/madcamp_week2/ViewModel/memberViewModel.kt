@@ -18,7 +18,6 @@ class memberViewModel: ViewModel() {
     val group_id: LiveData<String> = _group_id
 
     fun updateGroup_id(newId: String){
-        Log.d("Check098", "Update!")
         _group_id.value = newId
     }
 

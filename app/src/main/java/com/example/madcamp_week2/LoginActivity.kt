@@ -39,6 +39,7 @@ import com.example.madcamp_week2.serverInterface.components.POST.kakaoLogin
 import com.example.madcamp_week2.serverInterface.components.POST.loginPost
 import com.example.madcamp_week2.serverInterface.components.POST.registerPost
 import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
+import com.example.madcamp_week2.ui.theme.KakaoTalkLogin
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
 import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
@@ -157,7 +158,7 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                             .padding( top = 30.dp)
                     ){
                         Button(
-                            onClick = {loginState.value = true},
+                            onClick = { loginState.value = true },
                             modifier = Modifier
                                 .fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
@@ -186,7 +187,7 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                             modifier = Modifier
                                 .fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = PointBackground
+                                containerColor = KakaoTalkLogin
                             ),
                             interactionSource = remember { MutableInteractionSource() }) {
                             Text("카카오톡으로 로그인하기")
