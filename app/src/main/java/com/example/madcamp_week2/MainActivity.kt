@@ -37,10 +37,10 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(navController = navController, memberViewModel)
                         }
                         composable("IDPWCreate") {
-                            UserInform(navController = navController)
+                            UserInform(navController = navController, memberViewModel)
                         }
                         composable("MoneyCreate") {
-                            UserIncome(navController = navController)
+                            UserIncome(navController = navController, memberViewModel)
                         }
 
                         composable("Home") {

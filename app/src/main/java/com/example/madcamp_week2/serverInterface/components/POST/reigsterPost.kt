@@ -32,9 +32,10 @@ fun registerPost(loginInformation: loginInformation, navController: NavControlle
             if (response.isSuccessful) {
                 response.body()?.let{
                         responseBody ->
-                    responseBody.member_id?.let { memberViewModel.updateMember_id(it) }
+                        responseBody.member_id?.let { memberViewModel.updateMember_id(it)
+                        navController.navigate("MoneyCreate")
+                    }
                 }
-                navController.navigate("Home")
             } else {
 
             }
