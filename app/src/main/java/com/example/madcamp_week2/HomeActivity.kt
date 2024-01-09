@@ -65,6 +65,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.navigation.ActivityNavigator
 import com.example.madcamp_week2.ui.theme.ProgressedRed
 import com.example.madcamp_week2.ui.theme.UnProgressedGray
 import middleTitleTextStyle
@@ -159,9 +160,11 @@ fun TotalIncome() {
     }
 }
 
-var cardDataList = mutableListOf<String>()
+var cardDataList = mutableListOf<MutableList<String>>()
+var sendCrewData = mutableListOf<String>()
 @Composable
 fun CrewCard(navController: NavController, crewData: List<String>) {
+
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -188,6 +191,8 @@ fun CrewCard(navController: NavController, crewData: List<String>) {
             ) {
                 Button(
                     onClick = {
+                        sendCrewData.clear()
+                        sendCrewData.addAll(crewData)
                         navController.navigate("EachCrewCard")
                     },
                     colors = ButtonDefaults.buttonColors(Color.White),
@@ -204,6 +209,7 @@ fun CrewCard(navController: NavController, crewData: List<String>) {
             ) {
                 Text(text = crewData[0])
             }
+
             Row(modifier = Modifier
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -244,12 +250,8 @@ fun CrewBar(navController: NavHostController) {
             LazyRow {
                 items(count = cardDataList.size) { index ->
                     val crewData = cardDataList[index]
-                    var totalData = crewData
-                        .removeSurrounding("[", "]")
-                        .split(",")
-                        .map { it.trim() }
                     // totalData는 ArrayList임
-                    CrewCard(navController = navController, crewData = totalData)
+                    CrewCard(navController = navController, crewData = crewData)
                 }
             }
         }
@@ -258,7 +260,7 @@ fun CrewBar(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddSpending(navController: NavHostController) {
+fun AddSpending(navController: NavController) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -272,8 +274,7 @@ fun AddSpending(navController: NavHostController) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable{ navController.navigate("SpendAdd")
-                }
+                .clickable{ navController.navigate("SpendAdd") }
                 .shadow(7.dp, shape = MaterialTheme.shapes.small.copy(all = CornerSize(30.dp)))
         ) {
             Text(
@@ -291,8 +292,7 @@ fun AddIncome(navController: NavHostController) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 15.dp),
+            .padding(15.dp),
         verticalArrangement = Arrangement.Center,
             ) {
         Card(

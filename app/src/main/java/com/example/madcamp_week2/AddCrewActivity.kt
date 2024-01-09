@@ -293,7 +293,8 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
-                    buttonList = buttonList + "#$personalTag"
+                    if (!buttonList.contains("#$personalTag"))
+                        buttonList += "#$personalTag"
                 }
             ),
             modifier = Modifier
@@ -319,21 +320,30 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { buttonList = buttonList + "#식비" },
+                        onClick = {
+                            if (!buttonList.contains("#식비"))
+                                buttonList += "#식비"
+                                  },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#식비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#교통비" },
+                        onClick = {
+                            if (!buttonList.contains("#교통비"))
+                                buttonList += "#교통비"
+                        },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#교통비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#간식비" },
+                        onClick = {
+                            if (!buttonList.contains("#간식비"))
+                                buttonList += "#간식비"
+                                  },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
@@ -345,21 +355,29 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { buttonList = buttonList + "#꾸밈비" },
+                        onClick = {
+                            if (!buttonList.contains("#꾸밈비"))
+                                buttonList += "#꾸밈비"
+                                  },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#꾸밈비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#여가비" },
+                        onClick = {
+                            if (!buttonList.contains("#꾸밈비"))
+                                buttonList += "#꾸밈비"
+                                  },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
                         Text(text = "#여가비")
                     }
                     Button(
-                        onClick = { buttonList = buttonList + "#생활비" },
+                        onClick = {
+                            if (!buttonList.contains("#생활비"))
+                                buttonList += "#생활비" },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                     ) {
@@ -388,7 +406,6 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
         }
     }
 }
-
 
 //navController: NavHostController
 @OptIn(ExperimentalMaterial3Api::class)
@@ -627,7 +644,7 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                     addDatabaseState = true
                     navController.navigate("Home")
                     cardData.add(selectedPeople.toString())
-                    cardDataList.add(cardData.toString())
+                    cardDataList.add(cardData)
                           },
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
