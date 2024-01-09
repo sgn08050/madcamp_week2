@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("Home") {
-                            HomeScreen(navController =  navController)
+                            HomeScreen(navController =  navController, memberViewModel)
                         }
                         composable("EachCrewCard") {
                             EachCrewCard(navController =  navController)

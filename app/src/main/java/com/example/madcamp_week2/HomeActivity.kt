@@ -1,6 +1,6 @@
 package com.example.madcamp_week2
 
-import android.net.Uri
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -34,13 +32,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,13 +46,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import bigPlainTextStyle
 import bigTitleTextStyle
 import com.example.madcamp_week2.ui.theme.MadCamp_week2Theme
@@ -66,6 +58,10 @@ import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import com.example.madcamp_week2.ui.theme.WhiteBox
 import plainTextStyle
 import androidx.compose.runtime.*
+import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
+import com.example.madcamp_week2.serverInterface.components.POST.getAllGroups
+import com.example.madcamp_week2.serverInterface.components.POST.getGroupInformation
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -100,7 +96,7 @@ class HomeActivity : ComponentActivity() {
 //navController: NavHostController
 // @Preview
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, memberViewModel: memberViewModel) {
     LazyColumn (
         modifier = Modifier
             .fillMaxWidth()
@@ -117,7 +113,7 @@ fun HomeScreen(navController: NavHostController) {
         item {
             AppLogo()
             TotalIncome()
-            CrewBar(navController)
+            CrewBar(navController, memberViewModel)
             AddSpending(navController)
             AddIncome(navController)
         }
@@ -181,9 +177,10 @@ fun TotalIncome() {
 
 var cardDataList = mutableListOf<MutableList<String>>()
 var sendCrewData = mutableListOf<String>()
-@Composable
-fun CrewCard(navController: NavController, crewData: List<String>) {
 
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun CrewCard(navController: NavController, memberViewModel: memberViewModel, crewData: assetsgroupInformation) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -211,7 +208,8 @@ fun CrewCard(navController: NavController, crewData: List<String>) {
                 Button(
                     onClick = {
                         sendCrewData.clear()
-                        sendCrewData.addAll(crewData)
+                        sendCrewData.add(crewData.assetsgroupname)
+                        groupInformation.value = crewData
                         navController.navigate("EachCrewCard")
                     },
                     colors = ButtonDefaults.buttonColors(Color.White),
@@ -226,7 +224,7 @@ fun CrewCard(navController: NavController, crewData: List<String>) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = crewData[0])
+                Text(text = crewData.assetsgroupname)
             }
 
             Row(modifier = Modifier
@@ -238,9 +236,16 @@ fun CrewCard(navController: NavController, crewData: List<String>) {
         }
     }
 }
+var check = mutableStateOf(false)
+var myAssetsGroups = mutableStateOf(listOf<assetsgroupInformation>())
+var groupInformation = mutableStateOf(assetsgroupInformation("", "", "", "", emptyList(), 0, 0))
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun CrewBar(navController: NavHostController) {
+  
+  getAllGroups(memberViewModel, myAssetsGroups, check)
+    if(check.value) {
     Column {
         Row (
             modifier = Modifier
@@ -294,14 +299,18 @@ fun CrewBar(navController: NavHostController) {
                     }
                 }
                 LazyRow {
-                    items(count = cardDataList.size) { index ->
-                        val crewData = cardDataList[index]
-                        // totalData는 ArrayList임
-                        CrewCard(navController = navController, crewData = crewData)
+                    items(count = myAssetsGroups.value.size) {
+                                    index ->
+                                    CrewCard(
+                                        navController = navController,
+                                        memberViewModel,
+                                        crewData = myAssetsGroups.value[index]
+                                    )
+                                }
                     }
                 }
-            }
         }
+    }
     }
 }
 
@@ -408,7 +417,6 @@ fun AddIncome(navController: NavHostController) {
 fun CircleProgress(crewData: List<String>) {
     // var progress by remember { mutableStateOf(0f) }
 
-    Log.d("test","${CalculateMoney(crewData)[1]}")
     Box (
         modifier = Modifier
             .fillMaxSize()
@@ -438,7 +446,8 @@ fun CircleProgress(crewData: List<String>) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "${CalculateMoney(crewData = crewData)[0].toInt()}",
+                    text = groupInformation.currentasset.toString(),
+
                     style = middleTitleTextStyle
                 )
                 Text(
@@ -461,7 +470,7 @@ fun CircleProgress(crewData: List<String>) {
                     color = UnProgressedGray
                 )
                 Text(
-                    text = crewData[3],
+                    text = groupInformation.targetasset.toString(),
                     style = smallPlainTextStyle,
                     color = UnProgressedGray
                 )
