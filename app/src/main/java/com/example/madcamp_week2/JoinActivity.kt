@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 import androidx.compose.ui.tooling.preview.Preview
@@ -268,17 +269,10 @@ fun UserIncome(navController: NavHostController, memberViewModel: memberViewMode
     }
 
     if(registerState){
-        var intInitialTotalMoney = initialTotalMoney.toIntOrNull()
-        if(intInitialTotalMoney == null){
-            Toast.makeText(LocalContext.current, "올바른 값을 입력해주세요.", Toast.LENGTH_SHORT)
-            registerState = false
+        val member_id: String? = memberViewModel.member_id.value
+        member_id?.let{
+            registerAssetsPost(assetsInformation(it, initialTotalMoney.toInt(), true), navController)
         }
-        else{
-            val member_id: String? = memberViewModel.member_id.value
-            member_id?.let{
-                registerAssetsPost(assetsInformation(it, intInitialTotalMoney, true), navController)
-            }
-            registerState = false
-        }
+        registerState = false
     }
 }
