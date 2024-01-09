@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,9 +18,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -31,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -42,6 +46,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -52,6 +57,9 @@ import com.example.madcamp_week2.serverInterface.components.GET.getAllMembers
 import com.example.madcamp_week2.serverInterface.components.POST.assetsgroupPost
 import com.example.madcamp_week2.serverInterface.components.POST.assetsgroupmemberpairPost
 import com.example.madcamp_week2.serverInterface.components.POST.categoryPost
+import com.example.madcamp_week2.ui.theme.Brown40
+import com.example.madcamp_week2.ui.theme.BrownGrey40
+import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 import smallPlainTextStyle
@@ -75,7 +83,7 @@ class AddCrewActivity : ComponentActivity() {
 var cardData = mutableListOf<String>()
 var crewPeople = mutableStateOf(listOf<String>())
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CrewName(navController: NavHostController, memberViewModel: memberViewModel) {
     cardData = remember { mutableListOf() }
@@ -102,9 +110,15 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -115,6 +129,7 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
+        val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             value = crewName,
             placeholder = { Text(text = "입력...") },
@@ -122,7 +137,18 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 30.dp),
+            colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    cardData.add(crewName)
+                    navController.navigate("CrewDesAdd")
+                }
+            )
         )
         Row(
             modifier = Modifier
@@ -145,7 +171,7 @@ fun CrewName(navController: NavHostController, memberViewModel: memberViewModel)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) {
     var crewDes by remember { mutableStateOf("") }
@@ -172,9 +198,15 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -185,6 +217,7 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
                 .padding(horizontal = 30.dp)
                 .padding(top = 30.dp)
         )
+        val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             value = crewDes,
             placeholder = { Text(text = "입력...") },
@@ -192,7 +225,18 @@ fun CrewDes(navController: NavHostController, memberViewModel: memberViewModel) 
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 30.dp),
+            colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    cardData.add(crewDes)
+                    navController.navigate("CrewTagAdd")
+                }
+            )
         )
         Row(
             modifier = Modifier
@@ -247,9 +291,15 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -266,7 +316,7 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = Brown40,
                 ),
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -289,9 +339,14 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                 LazyRow {
                     items(buttonList) { buttonLabel ->
                         Button(
-                            onClick = { buttonList = buttonList.toMutableList().apply {
+                            onClick = {
+                                buttonList = buttonList.toMutableList().apply {
                                 remove(buttonLabel)
-                            } },
+                            }
+                                      },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BrownGrey40
+                            ),
                             modifier = Modifier
                                 .padding(5.dp)
                         ) {
@@ -313,6 +368,7 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                 .fillMaxWidth()
                 .padding(top = 10.dp)
                 .padding(horizontal = 30.dp),
+            colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
             placeholder = { Text(text = "사용자 정의 지출 태그 추가...") },
             onValueChange = { personalTag = it},
             keyboardOptions = KeyboardOptions(
@@ -335,7 +391,7 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = PointBackground,
                 ),
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -415,7 +471,7 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
         }
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = PointBackground,
             ),
             modifier = Modifier
                 .padding(top = 10.dp)
@@ -476,7 +532,7 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
 }
 
 //navController: NavHostController
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) {
     var crewDest by remember { mutableStateOf("") }
@@ -503,9 +559,15 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -537,12 +599,24 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
                 modifier = Modifier
                     .padding(end = 10.dp)
             ) {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 TextField(
                     value = crewDest,
                     onValueChange = { crewDest = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
                     placeholder = { Text(text = "입력...") },
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            cardData.add(crewDest)
+                            navController.navigate("CrewDesAdd")
+                        }
+                    )
                 )
             }
             Column (
@@ -619,9 +693,15 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -638,7 +718,7 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = Brown40,
                 ),
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -663,7 +743,11 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                             onClick = {
                                 selectedPeople = selectedPeople.toMutableList().apply {
                                 remove(peopleLabel)
-                            } },
+                            }
+                                      },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BrownGrey40
+                            ),
                             modifier = Modifier
                                 .padding(5.dp)
                         ) {
@@ -700,12 +784,13 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(8.dp),
+                colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
             )
         }
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = PointBackground,
             ),
             modifier = Modifier
                 .fillMaxWidth()

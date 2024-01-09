@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -27,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +41,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigPlainTextStyle
 import bigTitleTextStyle
+import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 import plainTextStyle
@@ -53,8 +59,7 @@ class AddMoneyActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
+                modifier = Modifier.fillMaxSize()
             ) {
             }
         }
@@ -88,9 +93,15 @@ fun AddSpendingMoney(navController: NavHostController) {
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -110,12 +121,24 @@ fun AddSpendingMoney(navController: NavHostController) {
             horizontalArrangement = Arrangement.Center
         ) {
             Column {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 TextField(
                     value = spendMoney,
                     onValueChange = { spendMoney = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
                     placeholder = { Text(text = "얼마를 사용했나요?") },
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            cardData.add(spendMoney)
+                            navController.navigate("Home")
+                        }
+                    )
                 )
             }
             Column (
@@ -134,7 +157,7 @@ fun AddSpendingMoney(navController: NavHostController) {
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = PointBackground,
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -179,7 +202,7 @@ fun AddSpendingMoney(navController: NavHostController) {
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = PointBackground,
                 ),
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -264,7 +287,7 @@ fun AddSpendingMoney(navController: NavHostController) {
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    containerColor = PointBackground,
                 ),
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -321,7 +344,6 @@ fun AddSpendingMoney(navController: NavHostController) {
                     totalMoney = totalMoneyInt.toString()
 
                     CalculateMoneyTag(selectedTag = buttonList, spendMoneyInt)
-
                     navController.navigate("Home")
                 },
                 modifier = Modifier
@@ -349,7 +371,7 @@ fun CalculateMoneyTag(selectedTag: List<String>, spendMoney: Int) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AddIncomeMoney(navController: NavHostController) {
     Column(
@@ -372,12 +394,25 @@ fun AddIncomeMoney(navController: NavHostController) {
                 modifier = Modifier
                     .height(35.dp)
             ) {
-                Text(
-                    text = "뒤로가기",
-                    color = Color.Black
+                Image(
+                    painter = painterResource(id = R.drawable.ui_return),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp) // 이미지 크기
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 )
             }
         }
+        Text(
+            text = "자산 추가하기",
+            style = bigTitleTextStyle,
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .padding(top = 30.dp)
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -387,12 +422,24 @@ fun AddIncomeMoney(navController: NavHostController) {
             horizontalArrangement = Arrangement.Center
         ) {
             Column {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 TextField(
                     value = incomeMoney,
                     onValueChange = { incomeMoney = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
                     placeholder = { Text(text = "얼마를 자산에 추가할까요?") },
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            cardData.add(incomeMoney)
+                            navController.navigate("Home")
+                        }
+                    )
                 )
             }
             Column (
@@ -430,3 +477,4 @@ fun AddIncomeMoney(navController: NavHostController) {
         }
     }
 }
+
