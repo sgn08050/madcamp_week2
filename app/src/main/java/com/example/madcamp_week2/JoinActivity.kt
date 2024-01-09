@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -89,6 +91,7 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
                     onValueChange = { userID = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
                 )
             }
         }
@@ -146,8 +149,10 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
                 TextField(
                     value = userPW,
                     onValueChange = { userPW = it },
+                    visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
                         .padding(end = 10.dp),
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
                 )
             }
         }
@@ -226,6 +231,7 @@ fun UserIncome(navController: NavHostController, memberViewModel: memberViewMode
                     onValueChange = { initialTotalMoney = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
                 )
             }
             Column (
@@ -245,10 +251,14 @@ fun UserIncome(navController: NavHostController, memberViewModel: memberViewMode
             horizontalArrangement = Arrangement.End
         ) {
             Button(
+                // navController jn.navigate("CrewDesHome")
                 onClick = {
-                    totalMoney = initialTotalMoney
-                    registerState = true
-                    },
+                    var moneyState = initialTotalMoney.toIntOrNull()
+                    if (initialTotalMoney.isEmpty() || moneyState == null) totalMoney = "0"
+                    else totalMoney = initialTotalMoney
+                    navController.navigate("Home")
+                },
+
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
             ) {
