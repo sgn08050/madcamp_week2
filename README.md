@@ -73,3 +73,4 @@
 
 
 ## APK 파일
+https://drive.google.com/file/d/1kJC9YW8Q_JTXS-8mTA7ehGouz5NMH-Pp/view?usp=sharing
