@@ -778,7 +778,7 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                             it.contains(
                                 searchPeople,
                                 ignoreCase = true
-                            ) && (it !== id)
+                            ) && (it != id)
                         }
                     }
                 },
@@ -809,12 +809,17 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
         ) {
             LazyColumn {
                 items(filteredPeople) { person ->
-                    Button(
-                        onClick = { selectedPeople = selectedPeople + "$person" },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(text = "$person")
+
+                    memberViewModel.id.value?.let { id ->
+                        if(id!=person){
+                            Button(
+                                onClick = { selectedPeople = selectedPeople + "$person" },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Text(text = "$person")
+                            }
+                        }
                     }
                 }
             }
