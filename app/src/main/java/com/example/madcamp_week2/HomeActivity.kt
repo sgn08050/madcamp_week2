@@ -101,7 +101,6 @@ fun HomeScreen(navController: NavHostController, memberViewModel: memberViewMode
             )
     ) {
         item {
-            AppLogo()
             TotalIncome(memberViewModel)
             CrewBar(navController, memberViewModel)
             AddSpending(navController)
