@@ -69,8 +69,6 @@
 - 자산을 설정하면 홈 화면의 자산이 수정되어 나타납니다.
 - 지출을 추가할 때에는 해당 지출을 반영할 그룹을 선택해서 지출 금액을 업데이트 합니다. 
 
-## C. 구현 영상
-
 
 ## APK 파일
 https://drive.google.com/file/d/1kJC9YW8Q_JTXS-8mTA7ehGouz5NMH-Pp/view?usp=sharing
