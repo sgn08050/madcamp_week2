@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -20,8 +22,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 import androidx.compose.ui.unit.dp
@@ -39,7 +44,7 @@ import middleTitleTextStyle
 var duplicateState = mutableStateOf(false) // 아이디 중복체크 성공여부 저장
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun UserInform(navController: NavHostController, memberViewModel: memberViewModel) {
 
@@ -82,12 +87,21 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
                 )
             }
             Column {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 TextField(
                     value = userID,
                     onValueChange = { userID = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
-                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                        }
+                    )
                 )
             }
         }
@@ -142,13 +156,23 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
                 )
             }
             Column {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 TextField(
                     value = userPW,
                     onValueChange = { userPW = it },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
                         .padding(end = 10.dp),
-                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            completeState = true
+                        }
+                    )
                 )
             }
         }
