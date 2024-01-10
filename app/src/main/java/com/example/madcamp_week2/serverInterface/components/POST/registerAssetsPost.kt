@@ -20,7 +20,7 @@ fun registerAssetsPost(assetsInformation: assetsInformation, navController: NavC
         .baseUrl(url)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-
+    Log.d("asdf", assetsInformation.assets.toString())
     var server = retrofit.create(serverAPIInterface::class.java)
 
     server.postRegisterAssets(assetsInformation).enqueue(object : Callback<ResponseDC> {

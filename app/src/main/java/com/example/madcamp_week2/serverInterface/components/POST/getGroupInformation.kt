@@ -28,7 +28,6 @@ fun getGroupInformation(inputassetsgroupInformation: MutableState<assetsgroupInf
             if (response.isSuccessful) {
                 response.body()?. let{
                     val result = assetsgroupInformation(it.member_id, it.assetsgroup_id, it.assetsgroupname, it.assetsgroupgoal, it.categories, it.targetasset, it.currentasset)
-                    Log.d("asdfe", it.assetsgroupname)
                     outputassetsgroupInformation.value = result
                     getCheck.value = true
                 }
