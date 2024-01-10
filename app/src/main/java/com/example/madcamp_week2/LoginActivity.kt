@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -192,7 +194,8 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                                 containerColor = PointBackground
                             ),
                             interactionSource = remember { MutableInteractionSource() }) {
-                            Text("로그인 하기")
+                            Text("로그인 하기",
+                                color = Color.Black)
                         }
 
                         Button(
@@ -205,7 +208,8 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                                 containerColor = PointBackground
                             ),
                             interactionSource = remember { MutableInteractionSource() }) {
-                            Text("회원가입")
+                            Text("회원가입",
+                                color = Color.Black)
                         }
 
                         Button(
@@ -216,7 +220,12 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                                 containerColor = KakaoTalkLogin
                             ),
                             interactionSource = remember { MutableInteractionSource() }) {
-                            Text("카카오톡으로 로그인하기")
+//                            Box(){
+//                                Image(painter = painterResource(id = R.drawable.kakaotalk_sharing_btn_small), contentDescription = "kakao")
+//                            }
+
+                            Text(text = "카카오톡으로 로그인하기",
+                                color = Color.Black)
                         }
 
                     }

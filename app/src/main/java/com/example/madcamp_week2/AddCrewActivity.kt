@@ -461,15 +461,6 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                     ) {
                         Text(text = "#여가비")
                     }
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#생활비"))
-                                buttonList += "#생활비" },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#생활비")
-                    }
                 }
             }
         }
@@ -584,7 +575,7 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
                 .padding(top = 30.dp)
         )
         Text(
-            text = "기본은 30만원 입니다.",
+            text = "숫자로 입력해주세요.",
             style = smallPlainTextStyle,
             modifier = Modifier
                 .padding(horizontal = 30.dp)

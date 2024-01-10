@@ -2,6 +2,7 @@ package com.example.madcamp_week2.serverInterface.components.POST
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import com.example.madcamp_week2.ViewModel.memberViewModel
 import com.example.madcamp_week2.serverInterface.LoginResponse
