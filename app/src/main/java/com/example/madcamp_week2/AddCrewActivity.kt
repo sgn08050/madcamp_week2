@@ -654,21 +654,18 @@ fun CrewTar(navController: NavHostController, memberViewModel: memberViewModel) 
         TagList.forEach{
                 tag -> categoryPost(categoryInformation(tag), navController)
         }
-        assetsgroupPost(assetsgroupInformation(assetsgroupname = cardData[0], assetsgroupgoal = cardData[1]), navController, memberViewModel = memberViewModel)
         addGroup = false
+        assetsgroupPost(assetsgroupInformation(assetsgroupname = cardData[0], assetsgroupgoal = cardData[1]), navController, memberViewModel = memberViewModel)
     }
 
 }
-
 // navController: NavHostController
-@SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CrewPeople(navController: NavHostController, memberViewModel: memberViewModel) {
 
     var searchPeople by remember { mutableStateOf("") }
-    var filteredPeople by remember {mutableStateOf(crewPeople)}
+    var filteredPeople by remember {mutableStateOf(crewPeople.value)}
     var selectedPeople by remember { mutableStateOf(listOf<String>()) }
     var addDatabaseState by remember {mutableStateOf(false)}
     Column (
@@ -771,7 +768,7 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                 value = searchPeople,
                 onValueChange = {
                     searchPeople = it
-                    filteredPeople.value = performSearch(it, crewPeople.value)
+                    filteredPeople = crewPeople.value.filter { it.contains(searchPeople, ignoreCase = true) }
                 },
                 label = { Text("이름 검색...") },
                 keyboardOptions = KeyboardOptions(
@@ -799,7 +796,7 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
                 .padding(top = 10.dp),
         ) {
             LazyColumn {
-                items(filteredPeople.value) { person ->
+                items(filteredPeople) { person ->
                     Button(
                         onClick = { selectedPeople = selectedPeople + "$person" },
                         modifier = Modifier
@@ -835,14 +832,9 @@ fun CrewPeople(navController: NavHostController, memberViewModel: memberViewMode
     }
 
     if(addDatabaseState){
+        addDatabaseState = false
         selectedPeople.forEach{
             people -> assetsgroupmemberpairPost(navController, memberViewModel, people)
         }
-        addDatabaseState = false
     }
-}
-
-fun performSearch(query: String, targetData: List<String>): List<String> {
-    val filteredData = targetData
-    return filteredData.filter { it.contains(query, ignoreCase = true) }
 }

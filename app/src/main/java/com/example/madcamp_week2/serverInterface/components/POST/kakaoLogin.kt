@@ -30,7 +30,7 @@ fun kakaoLogin(navController: NavController, memberViewModel: memberViewModel){
                     Log.d("login", "fail error")
                 }
                 else if (user != null) {
-                    kakaoLoginPost(loginInformation = loginInformation(user.kakaoAccount?.profile?.nickname.toString(), user.id.toString()), navController = navController, memberViewModel)
+                    kakaoLoginPost(loginInformation = loginInformation(user.kakaoAccount?.profile?.nickname.toString(), user.id.toString(), 0), navController = navController, memberViewModel)
                 }
             }
 

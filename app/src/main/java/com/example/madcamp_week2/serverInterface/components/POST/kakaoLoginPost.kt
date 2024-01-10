@@ -29,11 +29,13 @@ fun kakaoLoginPost(loginInformation: loginInformation, navController: NavControl
     server.postKakaoLoginRequest(loginInformation).enqueue(object : Callback<LoginResponse> {
         override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
             if (response.isSuccessful) {
-                response.body()?.let{
-                    responseBody ->
+                response.body()?.let { responseBody ->
                     responseBody.member_id?.let { memberViewModel.updateMember_id(it) }
+                    responseBody.result?.let {
+                        if (it === "1") navController.navigate("MoneyCreate")
+                        else navController.navigate("Home")
+                    }
                 }
-                navController.navigate("Home")
             } else {
 
             }

@@ -35,7 +35,7 @@ fun assetsgroupPost(assetsgroupInformation: assetsgroupInformation, navControlle
                 }
                 navController.navigate("CrewPeopleAdd")
             } else {
-
+                navController.navigate("CrewPeopleAdd")
             }
         }
         override fun onFailure(call: Call<AssetsGroupResponse>, t: Throwable) {
