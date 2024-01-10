@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.example.madcamp_week2.ViewModel.memberViewModel
 import com.example.madcamp_week2.serverInterface.GroupInformationResponse
-import com.example.madcamp_week2.serverInterface.GroupResponse
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
 import com.example.madcamp_week2.serverInterface.classComponents.member
 import com.example.madcamp_week2.serverInterface.serverAPIInterface

@@ -1,8 +1,6 @@
 package com.example.madcamp_week2
 
 import android.annotation.SuppressLint
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -25,10 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigTitleTextStyle
@@ -252,11 +247,12 @@ fun UserIncome(navController: NavHostController, memberViewModel: memberViewMode
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                // navController jn.navigate("CrewDesHome")
+
                 onClick = {
                     var moneyState = initialTotalMoney.toIntOrNull()
                     if (initialTotalMoney.isEmpty() || moneyState == null) totalMoney = "0"
                     else totalMoney = initialTotalMoney
+                    registerState = true
                     navController.navigate("Home")
                 },
 
@@ -271,7 +267,7 @@ fun UserIncome(navController: NavHostController, memberViewModel: memberViewMode
     if(registerState){
         val member_id: String? = memberViewModel.member_id.value
         member_id?.let{
-            registerAssetsPost(assetsInformation(it, initialTotalMoney.toInt(), true), navController)
+            registerAssetsPost(assetsInformation(it, totalMoney.toInt(), true), navController)
         }
         registerState = false
     }

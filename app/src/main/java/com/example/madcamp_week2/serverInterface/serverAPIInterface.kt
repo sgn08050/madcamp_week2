@@ -31,9 +31,6 @@ data class MemberResponse(
     var id: String
 ) : ResponseDC()
 
-data class GroupResponse(
-    var assetsgroup_id: String
-) : ResponseDC()
 
 data class GroupInformationResponse(
     var member_id: String,
@@ -43,6 +40,10 @@ data class GroupInformationResponse(
     var categories: List<String>,
     var targetasset: Int,
     var currentasset: Int
+) : ResponseDC()
+
+data class AssetsResponse(
+    var assets: Int
 ) : ResponseDC()
 
 interface serverAPIInterface {
@@ -79,6 +80,9 @@ interface serverAPIInterface {
 
     @POST("/group/information")
     fun getGroupInformation(@Body assetsgroupInformation: assetsgroupInformation): Call<GroupInformationResponse>
+
+    @POST("/assets/get")
+    fun getAssets(@Body member: member): Call<AssetsResponse>
 
     @GET("/members/all")
     fun getAllMembers(): Call<List<MemberResponse>>

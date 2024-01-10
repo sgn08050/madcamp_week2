@@ -21,12 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -61,16 +57,10 @@ import androidx.compose.runtime.*
 import com.example.madcamp_week2.ViewModel.memberViewModel
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
 import com.example.madcamp_week2.serverInterface.components.POST.getAllGroups
-import com.example.madcamp_week2.serverInterface.components.POST.getGroupInformation
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.navigation.ActivityNavigator
+import com.example.madcamp_week2.serverInterface.components.POST.getAssetsPost
 import com.example.madcamp_week2.ui.theme.Brown40
 import com.example.madcamp_week2.ui.theme.ProgressedRed
 import com.example.madcamp_week2.ui.theme.UnProgressedGray
@@ -112,7 +102,7 @@ fun HomeScreen(navController: NavHostController, memberViewModel: memberViewMode
     ) {
         item {
             AppLogo()
-            TotalIncome()
+            TotalIncome(memberViewModel)
             CrewBar(navController, memberViewModel)
             AddSpending(navController)
             AddIncome(navController)
@@ -130,45 +120,53 @@ fun AppLogo() {
 }
 
 var totalMoney = "아직 설정하지 않았습니다"
+var incomeState = mutableStateOf(false)
+var money = mutableStateOf("")
+@SuppressLint("UnrememberedMutableState")
 @Composable
-fun TotalIncome() {
-    Column {
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp)
-        ){
-            Text(
-                text = "총 자산",
-                style = bigTitleTextStyle
-            )
-        }
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box (
+fun TotalIncome(memberViewModel: memberViewModel) {
+
+    getAssetsPost(memberViewModel, incomeState, money)
+    if(incomeState.value) {
+        totalMoney = money.value
+        Column {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(bottom = 20.dp),
-                contentAlignment = Alignment.Center
+                    .padding(30.dp)
             ) {
-                Row {
-                    Text(
-                        text = totalMoney,
-                        style = bigPlainTextStyle,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .background(PointBackground)
-                    )
-                    Text(
-                        text = " 원",
-                        style = bigTitleTextStyle,
-                        modifier = Modifier
-                            .background(PointBackground)
-                    )
+                Text(
+                    text = "총 자산",
+                    style = bigTitleTextStyle
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(bottom = 20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row {
+                        Text(
+                            text = money.value,
+                            style = bigPlainTextStyle,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .background(PointBackground)
+                        )
+                        Text(
+                            text = " 원",
+                            style = bigTitleTextStyle,
+                            modifier = Modifier
+                                .background(PointBackground)
+                        )
 
+                    }
                 }
             }
         }
