@@ -461,15 +461,6 @@ fun CrewTag(navController: NavHostController, memberViewModel: memberViewModel) 
                     ) {
                         Text(text = "#여가비")
                     }
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#생활비"))
-                                buttonList += "#생활비" },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#생활비")
-                    }
                 }
             }
         }
