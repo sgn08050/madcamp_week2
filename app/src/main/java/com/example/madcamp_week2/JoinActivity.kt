@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import bigTitleTextStyle
 import com.example.madcamp_week2.ViewModel.memberViewModel
@@ -39,6 +41,7 @@ import com.example.madcamp_week2.serverInterface.components.POST.idCheckPost
 import com.example.madcamp_week2.serverInterface.components.POST.registerAssetsPost
 import com.example.madcamp_week2.serverInterface.components.POST.registerPost
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
+import kotlinx.coroutines.delay
 import middleTitleTextStyle
 
 var duplicateState = mutableStateOf(false) // 아이디 중복체크 성공여부 저장
@@ -108,7 +111,7 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp)
+                .padding(top = 20.dp)
                 .padding(start = 30.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
@@ -116,8 +119,7 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
             Button(
                 onClick = {
                     doubleCheckState = true
-                          },
-                modifier = Modifier
+                          }
             ) {
                 Text(
                     text = "아이디 중복 체크"
@@ -133,7 +135,8 @@ fun UserInform(navController: NavHostController, memberViewModel: memberViewMode
                     "아이디 중복 체크를 해주세요."
                 },
                 modifier = Modifier
-                    .padding(start = 10.dp)
+                    .padding(start = 10.dp),
+                fontSize = 12.sp
             )
         }
         Row(

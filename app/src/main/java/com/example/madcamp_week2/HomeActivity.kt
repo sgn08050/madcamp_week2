@@ -60,12 +60,15 @@ import com.example.madcamp_week2.serverInterface.components.POST.getAllGroups
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.unit.sp
 import com.example.madcamp_week2.serverInterface.components.POST.getAssetsPost
 import com.example.madcamp_week2.ui.theme.Brown40
 import com.example.madcamp_week2.ui.theme.ProgressedRed
 import com.example.madcamp_week2.ui.theme.UnProgressedGray
 import middleTitleTextStyle
 import smallPlainTextStyle
+import java.text.NumberFormat
+import java.util.Locale
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +112,24 @@ fun HomeScreen(navController: NavHostController, memberViewModel: memberViewMode
     }
 }
 
+@Composable
+fun FormattedMoneyText(money: String) {
+    val formattedMoney = try {
+        val number = NumberFormat.getNumberInstance(Locale.getDefault()).format(money.toDouble())
+        number
+    } catch (e: NumberFormatException) {
+
+        money
+    }
+
+    Text(
+        text = formattedMoney,
+        style = bigPlainTextStyle,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .background(PointBackground)
+    )
+}
 
 var totalMoney = "아직 설정하지 않았습니다"
 var incomeState = mutableStateOf(false)
@@ -143,13 +164,7 @@ fun TotalIncome(memberViewModel: memberViewModel) {
                     contentAlignment = Alignment.Center
                 ) {
                     Row {
-                        Text(
-                            text = money.value,
-                            style = bigPlainTextStyle,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .background(PointBackground)
-                        )
+                        FormattedMoneyText(money = money.value)
                         Text(
                             text = " 원",
                             style = bigTitleTextStyle,
@@ -239,7 +254,8 @@ fun CrewBar(navController: NavHostController, memberViewModel: memberViewModel) 
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(30.dp)
+                .padding(30.dp),
+            verticalAlignment = Alignment.CenterVertically
         )   {
             Text(
                 text = "내 모임",
@@ -254,7 +270,9 @@ fun CrewBar(navController: NavHostController, memberViewModel: memberViewModel) 
             ) {
                 Text(text = "+",
                     style = plainTextStyle,
-                    color = Black)
+                    color = Black,
+                    fontSize = 20.sp
+                    )
             }
         }
         Surface (
@@ -380,7 +398,7 @@ fun AddIncome(navController: NavHostController) {
                     modifier = Modifier.weight(1f)  // 첫 번째 Column이 남은 공간을 모두 차지하도록 합니다.
                 ) {
                     Text(
-                        text = "자산 추가하기",
+                        text = "자산 변경하기",
                         style = plainTextStyle,
                         modifier = Modifier
                             .padding(30.dp)
@@ -435,7 +453,7 @@ fun CircleProgress(crewData: assetsgroupInformation) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = crewData.currentasset.toString(),
+                    text = NumberFormat.getNumberInstance(Locale.getDefault()).format(crewData.currentasset.toDouble()),
 
                     style = middleTitleTextStyle
                 )
@@ -459,7 +477,7 @@ fun CircleProgress(crewData: assetsgroupInformation) {
                     color = UnProgressedGray
                 )
                 Text(
-                    text = crewData.targetasset.toString(),
+                    text = NumberFormat.getNumberInstance(Locale.getDefault()).format(crewData.targetasset.toDouble()),
                     style = smallPlainTextStyle,
                     color = UnProgressedGray
                 )
