@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("SpendAdd") {
-                            AddSpendingMoney(navController =  navController)
+                            AddSpendingMoney(navController =  navController, memberViewModel)
                         }
                         composable("IncomeAdd") {
                             AddIncomeMoney(navController =  navController, memberViewModel)
