@@ -48,7 +48,6 @@
 - 최초 회원가입 시에 자산을 입력 받습니다. 해당 자산은 추후 홈화면에서 수정이 가능합니다. 
 
 ### 나의 모임 생성 
-![Untitled](https://github.com/wona825/madcamp_week1/assets/70854569/2b1d27eb-0292-4bed-a81b-0be372939315)
 
 - 홈 화면에서 나의 총 자산 및 모임 관리/생성, 지출 추가, 자산 수정이 가능합니다.
 - 모임을 추가하게 되면 모임의 이름, 설명, 지출 태그, 월 목표 소비 금액, 함께할 친구가 추가됩니다.
@@ -69,4 +68,3 @@
 
 
 ## APK 파일
-[app-release.apk.zip](https://github.com/wona825/madcamp_week1/files/13818417/app-release.apk.zip)
