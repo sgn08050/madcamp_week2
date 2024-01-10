@@ -1,7 +1,6 @@
 package com.example.madcamp_week2
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -26,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -43,15 +41,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import bigPlainTextStyle
 import bigTitleTextStyle
+import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.components.POST.updateAssetsPost
 import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
-import plainTextStyle
 import smallPlainTextStyle
 
 class AddMoneyActivity : ComponentActivity() {
@@ -373,14 +370,16 @@ fun CalculateMoneyTag(selectedTag: List<String>, spendMoney: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun AddIncomeMoney(navController: NavHostController) {
+fun AddIncomeMoney(navController: NavHostController, memberViewModel: memberViewModel) {
+
+    var updatestate by remember{mutableStateOf(false)}
+    var incomeMoney by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(TotalBackgroundColor)
     ) {
-        var incomeMoney by remember { mutableStateOf("") }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -407,7 +406,7 @@ fun AddIncomeMoney(navController: NavHostController) {
             }
         }
         Text(
-            text = "자산 추가하기",
+            text = "자산 변경하기",
             style = bigTitleTextStyle,
             modifier = Modifier
                 .padding(horizontal = 30.dp)
@@ -428,7 +427,7 @@ fun AddIncomeMoney(navController: NavHostController) {
                     onValueChange = { incomeMoney = it },
                     modifier = Modifier
                         .padding(end = 10.dp),
-                    placeholder = { Text(text = "얼마를 자산에 추가할까요?") },
+                    placeholder = { Text(text = "자산을 얼마로 변경할까요?") },
                     colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done
@@ -467,6 +466,7 @@ fun AddIncomeMoney(navController: NavHostController) {
                 onClick = {
                     totalMoneyInt += incomeMoneyInt
                     totalMoney = totalMoneyInt.toString()
+                    updatestate = true
                     navController.navigate("Home")
                           },
                 modifier = Modifier
@@ -476,5 +476,10 @@ fun AddIncomeMoney(navController: NavHostController) {
             }
         }
     }
+
+    if(updatestate){
+        updateAssetsPost(updateassets = incomeMoney.toInt(), navController = navController, memberViewModel = memberViewModel)
+    }
+
 }
 
