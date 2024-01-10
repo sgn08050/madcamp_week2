@@ -101,7 +101,6 @@ fun HomeScreen(navController: NavHostController, memberViewModel: memberViewMode
             )
     ) {
         item {
-            AppLogo()
             TotalIncome(memberViewModel)
             CrewBar(navController, memberViewModel)
             AddSpending(navController)
@@ -110,14 +109,6 @@ fun HomeScreen(navController: NavHostController, memberViewModel: memberViewMode
     }
 }
 
-@Composable
-fun AppLogo() {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(20.dp)) {
-        Text(text = "로고 들어갈 자리")
-    }
-}
 
 var totalMoney = "아직 설정하지 않았습니다"
 var incomeState = mutableStateOf(false)

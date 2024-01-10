@@ -87,6 +87,9 @@ interface serverAPIInterface {
     @POST("/assets/update")
     fun updateAssets(@Body assetsInformation: assetsInformation): Call<ResponseDC>
 
+    @POST("/assets/uses")
+    fun updateUses(@Body assetsgroupInformationList: List<assetsgroupmemberpair>): Call<ResponseDC>
+
     @GET("/members/all")
     fun getAllMembers(): Call<List<MemberResponse>>
 

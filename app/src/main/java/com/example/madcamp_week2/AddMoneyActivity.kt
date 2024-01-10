@@ -45,7 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigTitleTextStyle
 import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
+import com.example.madcamp_week2.serverInterface.components.POST.getAllGroups
 import com.example.madcamp_week2.serverInterface.components.POST.updateAssetsPost
+import com.example.madcamp_week2.serverInterface.components.POST.updateUsesPost
 import com.example.madcamp_week2.ui.theme.PointBackground
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
@@ -65,12 +68,21 @@ class AddMoneyActivity : ComponentActivity() {
 
 
 var totalMoneyInt: Int = totalMoney.toInt()
+var checkAdd = mutableStateOf(false)
+var myAssetsGroupsAdd = mutableStateOf(listOf<assetsgroupInformation>())
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AddSpendingMoney(navController: NavHostController) {
+fun AddSpendingMoney(navController: NavHostController, memberViewModel: memberViewModel) {
     var spendMoney by remember { mutableStateOf("") }
-    var buttonList by remember { mutableStateOf(listOf<String>()) }
+    var buttonState by remember { mutableStateOf(false) }
+    var buttonList by remember { mutableStateOf(listOf<assetsgroupInformation>()) }
+    getAllGroups(memberViewModel, myAssetsGroupsAdd, checkAdd)
+    if(checkAdd.value){
+
+        val size_count = myAssetsGroupsAdd.value.size
+        val first_count = if(size_count > 3) (myAssetsGroupsAdd.value.size.toFloat() / 2).toInt() else size_count
+        val second_count = if(size_count > 3) myAssetsGroupsAdd.value.size - first_count else 0
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -166,7 +178,7 @@ fun AddSpendingMoney(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()) {
                     Text(
-                        text = "선택된 지출 태그",
+                        text = "선택된 그룹",
                         style = smallPlainTextStyle,
                         modifier = Modifier
                             .padding(top = 10.dp)
@@ -186,7 +198,7 @@ fun AddSpendingMoney(navController: NavHostController) {
                                 modifier = Modifier
                                     .padding(4.dp)
                             ) {
-                                Text(text = buttonLabel)
+                                Text(text = buttonLabel.assetsgroupname)
                             }
                         }
                     }
@@ -206,124 +218,45 @@ fun AddSpendingMoney(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp),
             ) {
-                Row (
+                LazyRow (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#식비"))
-                                buttonList += "#식비"
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#식비")
-                    }
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#교통비"))
-                                buttonList += "#교통비"
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#교통비")
-                    }
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#간식비"))
-                                buttonList += "#간식비"
-                                  },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#간식비")
-                    }
-                }
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#꾸밈비"))
-                                buttonList += "#꾸밈비"
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#꾸밈비")
-                    }
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#여가비"))
-                                buttonList += "#여가비"
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#여가비")
-                    }
-                    Button(
-                        onClick = {
-                            if (!buttonList.contains("#생활비"))
-                                buttonList += "#생활비"
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                    ) {
-                        Text(text = "#생활비")
-                    }
-                }
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = PointBackground,
-                ),
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
-                    .height(80.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()) {
-                    Text(
-                        text = "사용자 태그",
-                        style = smallPlainTextStyle,
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .padding(start = 10.dp)
-                    )
-                }
-                LazyRow {
-                    items(usrTagList) { tagLabel ->
+                    items(count = first_count) {
+                        val name = myAssetsGroupsAdd.value[it].assetsgroupname
                         Button(
                             onClick = {
-                                if (!buttonList.contains("$tagLabel"))
-                                    buttonList += "$tagLabel"
+                                if (!buttonList.contains(myAssetsGroupsAdd.value[it]))
+                                    buttonList += myAssetsGroupsAdd.value[it]
                             },
                             modifier = Modifier
-                                .padding(5.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                            ) {
-                                Text(text = tagLabel)
-                            }
+                                .padding(horizontal = 5.dp)
+                        ){
+                            Text(text = name)
+                        }
+                    }
+                }
+                LazyRow (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    items(count = second_count) {
+                        val name = myAssetsGroupsAdd.value[first_count + it].assetsgroupname
+                        Button(
+                            onClick = {
+                                if (!buttonList.contains(myAssetsGroupsAdd.value[first_count + it]))
+                                    buttonList += myAssetsGroupsAdd.value[first_count + it]
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                        ){
+                            Text(text = name)
                         }
                     }
                 }
             }
         }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -339,8 +272,7 @@ fun AddSpendingMoney(navController: NavHostController) {
                 onClick = {
                     totalMoneyInt -= spendMoneyInt
                     totalMoney = totalMoneyInt.toString()
-
-                    CalculateMoneyTag(selectedTag = buttonList, spendMoneyInt)
+                    buttonState = true
                     navController.navigate("Home")
                 },
                 modifier = Modifier
@@ -349,6 +281,12 @@ fun AddSpendingMoney(navController: NavHostController) {
                 Text(text = "완료")
             }
         }
+        }
+        if(buttonState){
+            updateUsesPost(buttonList, spendMoney.toInt(), navController, memberViewModel)
+            buttonState = false
+        }
+
     }
 }
 
