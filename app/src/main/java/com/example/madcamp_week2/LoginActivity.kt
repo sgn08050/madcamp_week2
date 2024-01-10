@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -34,10 +36,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -75,7 +80,7 @@ class LoginActivity : ComponentActivity() {
 
 
 var loginSuccessBool = { mutableStateOf(false)}
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(navController: NavHostController, memberViewModel: memberViewModel) {
 
@@ -119,6 +124,7 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                         .padding(15.dp)
                 ) {
                     Column {
+                        val keyboardController = LocalSoftwareKeyboardController.current
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
@@ -132,13 +138,22 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                                 onValueChange = { newId -> idValue.value = newId},
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
+                                colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        keyboardController?.hide()
+                                    }
+                                )
                             )
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val keyboardController = LocalSoftwareKeyboardController.current
                             Text(
                                 text = "비밀번호",
                                 style = plainTextStyle
@@ -149,7 +164,16 @@ fun LoginScreen(navController: NavHostController, memberViewModel: memberViewMod
                                 visualTransformation = PasswordVisualTransformation(),
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
+                                colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        keyboardController?.hide()
+                                        loginState.value = true
+                                    }
+                                )
                             )
                         }
                     }
