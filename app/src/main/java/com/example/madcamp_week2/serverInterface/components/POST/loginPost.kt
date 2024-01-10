@@ -36,6 +36,7 @@ fun loginPost(loginInformation: loginInformation, navController: NavController, 
                 response.body()?.let{
                         responseBody ->
                     responseBody.member_id?.let { memberViewModel.updateMember_id(it) }
+                    responseBody.id?.let{memberViewModel.updateId(it)}
                 }
                 navController.navigate("Home")
             } else {

@@ -1,5 +1,6 @@
 package com.example.madcamp_week2
 
+
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,11 +25,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,47 +38,43 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import bigPlainTextStyle
 import bigTitleTextStyle
+import com.example.madcamp_week2.ViewModel.memberViewModel
+import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
+import com.example.madcamp_week2.serverInterface.components.POST.getAllGroups
 import com.example.madcamp_week2.ui.theme.ProgressedRed
 import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
-import com.example.madcamp_week2.ui.theme.UnProgressedGray
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import middleTitleTextStyle
 import plainTextStyle
 import smallPlainTextStyle
-import java.util.concurrent.TimeUnit
 
 // ※ sendCrewData format : [ Name, Destination, Group Tag, Target Money, Friends ]
 
-
-// navController: NavHostController
-
-
 @Composable
 fun EachCrewCard(navController: NavHostController) {
-    LazyColumn (
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(TotalBackgroundColor)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFD0C1B9), Color.Transparent),
-                    startY = 0.0f,
-                    endY = 300.0f
+
+        LazyColumn (
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(TotalBackgroundColor)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFFD0C1B9), Color.Transparent),
+                        startY = 0.0f,
+                        endY = 300.0f
+                    )
                 )
-            )
-    ) {
-        item {
-            CrewCardName(sendCrewData, navController)
-            CrewCardMoney(sendCrewData)
+        ) {
+            item {
+                CrewCardName(navController, groupInformation.value)
+                CrewCardMoney(groupInformation.value)
+            }
         }
-    }
 }
 
 
 @Composable
-fun CrewCardName(crewData:List<String>?, navController: NavHostController) {
+fun CrewCardName(navController: NavHostController, assetsgroupInformation: assetsgroupInformation) {
     Column (
         modifier = Modifier
             .padding(horizontal = 30.dp)
@@ -111,20 +105,20 @@ fun CrewCardName(crewData:List<String>?, navController: NavHostController) {
             }
         }
         Text(
-            text = crewData?.get(0).takeIf { it?.isNotBlank() == true } ?: "이름이 입력되지 않았습니다.",
+            text = if (assetsgroupInformation.assetsgroupname === "") "이름이 입력되지 않았습니다." else assetsgroupInformation.assetsgroupname,
             style = bigTitleTextStyle,
             modifier = Modifier
                 .padding(top = 30.dp)
                 .fillMaxWidth()
         )
         Text(
-            text = crewData?.get(1).takeIf { it?.isNotBlank() == true } ?: "목적이 입력되지 않았습니다. ",
+            text = if (assetsgroupInformation.assetsgroupgoal === "") "목적이 입력되지 않았습니다." else assetsgroupInformation.assetsgroupgoal,
             style = middleTitleTextStyle,
             modifier = Modifier
                 .padding(top = 10.dp)
                 .fillMaxWidth()
         )
-        var tagList = crewData?.get(2).takeIf { it?.isNotBlank() == true } ?: "지출 태그가 없습니다."
+        var tagList = "[#여가비, #교통비]"
         var finalList = tagList.split(",").map { it.trim(' ', '[').trimEnd(']') }
         LazyRow {
             items(finalList.size) { item ->
@@ -148,7 +142,7 @@ fun CrewCardName(crewData:List<String>?, navController: NavHostController) {
 }
 
 @Composable
-fun CrewCardMoney(crewData:List<String>) {
+fun CrewCardMoney(assetsgroupInformation: assetsgroupInformation) {
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -165,7 +159,8 @@ fun CrewCardMoney(crewData:List<String>) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "${CalculateMoney(crewData = crewData)[0].toInt()}",
+                    text = assetsgroupInformation.currentasset.toString(),
+
                     style = bigTitleTextStyle
                 )
                 Text(
@@ -185,7 +180,7 @@ fun CrewCardMoney(crewData:List<String>) {
                 .padding(horizontal = 30.dp)
                 .padding(top = 20.dp)
         ) {
-            var progress = CalculateMoney(crewData = crewData)[1]
+            var progress = CalculateMoney(assetsgroupInformation.targetasset, assetsgroupInformation.currentasset)[1]
             LinearProgressBar(progress = progress)
         }
         Row(
@@ -205,7 +200,7 @@ fun CrewCardMoney(crewData:List<String>) {
                     color = Color.Gray
                 )
                 Text(
-                    text = crewData?.get(3).takeIf { it?.isNotBlank() == true } ?: "-",
+                    text = assetsgroupInformation.targetasset.toString(),
                     style = smallPlainTextStyle,
                     color = Color.Gray
                 )
@@ -220,14 +215,11 @@ fun CrewCardMoney(crewData:List<String>) {
     }
 }
 
-fun CalculateMoney(crewData: List<String>) : List<Float> {
-    var TarMoney = crewData.get(3).toIntOrNull() ?: 300000
-    var UsedMoney = crewData[crewData.size - 1].toInt()
+fun CalculateMoney(TarMoney:Int, RemainMoney: Int) : List<Float> {
 
-    var RemainMoney = TarMoney - UsedMoney
-    var RemainMoneyRate = UsedMoney.toFloat()/TarMoney.toFloat()
+    var RemainMoneyRate = (TarMoney - RemainMoney).toFloat()/TarMoney.toFloat()
 
-    return listOf(RemainMoney.toFloat(), RemainMoneyRate)
+    return listOf((TarMoney - RemainMoney).toFloat(), RemainMoneyRate)
 }
 
 

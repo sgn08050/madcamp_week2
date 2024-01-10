@@ -33,7 +33,10 @@ fun registerPost(loginInformation: loginInformation, navController: NavControlle
                 response.body()?.let{
                         responseBody ->
                         responseBody.member_id?.let { memberViewModel.updateMember_id(it)
-                        navController.navigate("MoneyCreate")
+                        responseBody.id?.let {
+                            id -> memberViewModel.updateId(id)
+                            navController.navigate("MoneyCreate")
+                        }
                     }
                 }
             } else {

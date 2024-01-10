@@ -1,6 +1,5 @@
 package com.example.madcamp_week2.serverInterface.components.GET
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.example.madcamp_week2.serverInterface.MemberResponse
 import com.example.madcamp_week2.serverInterface.serverAPIInterface

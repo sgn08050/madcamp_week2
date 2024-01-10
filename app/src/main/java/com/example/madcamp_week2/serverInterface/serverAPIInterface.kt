@@ -2,9 +2,11 @@ package com.example.madcamp_week2.serverInterface
 
 import com.example.madcamp_week2.serverInterface.classComponents.assetsInformation
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupInformation
+import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupcategorypair
 import com.example.madcamp_week2.serverInterface.classComponents.assetsgroupmemberpair
 import com.example.madcamp_week2.serverInterface.classComponents.categoryInformation
 import com.example.madcamp_week2.serverInterface.classComponents.loginInformation
+import com.example.madcamp_week2.serverInterface.classComponents.member
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -13,7 +15,8 @@ open class ResponseDC(
 )
 
 data class LoginResponse(
-    var member_id: String? = null
+    var member_id: String? = null,
+    var id: String? = null
 ) : ResponseDC()
 
 data class AssetsGroupResponse(
@@ -26,6 +29,21 @@ data class CategoryResponse(
 
 data class MemberResponse(
     var id: String
+) : ResponseDC()
+
+
+data class GroupInformationResponse(
+    var member_id: String,
+    var assetsgroup_id: String,
+    var assetsgroupname: String,
+    var assetsgroupgoal: String,
+    var categories: List<String>,
+    var targetasset: Int,
+    var currentasset: Int
+) : ResponseDC()
+
+data class AssetsResponse(
+    var assets: Int
 ) : ResponseDC()
 
 interface serverAPIInterface {
@@ -54,6 +72,19 @@ interface serverAPIInterface {
     @POST("/register/assets")
     fun postRegisterAssets(@Body assetsInformation: assetsInformation): Call<ResponseDC>
 
+    @POST("/assetsgroupcategorypair/information")
+    fun postAssetsGroupCategoryPair(@Body assetsgroupcategorypair: assetsgroupcategorypair): Call<ResponseDC>
+
+    @POST("/groups/all")
+    fun getAllGroups(@Body member: member): Call<List<GroupInformationResponse>>
+
+    @POST("/group/information")
+    fun getGroupInformation(@Body assetsgroupInformation: assetsgroupInformation): Call<GroupInformationResponse>
+
+    @POST("/assets/get")
+    fun getAssets(@Body member: member): Call<AssetsResponse>
+
     @GET("/members/all")
     fun getAllMembers(): Call<List<MemberResponse>>
+
 }

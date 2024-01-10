@@ -14,6 +14,13 @@ class memberViewModel: ViewModel() {
         _member_id.value = newId
     }
 
+    private val _id = MutableLiveData<String>()
+    val id: LiveData<String> = _id
+
+    fun updateId(newId: String){
+        _id.value = newId
+    }
+
     private val _group_id = MutableLiveData<String>()
     val group_id: LiveData<String> = _group_id
 

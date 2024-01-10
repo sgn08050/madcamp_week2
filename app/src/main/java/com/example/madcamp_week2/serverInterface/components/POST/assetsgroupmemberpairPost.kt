@@ -14,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-fun assetsgroupmemberpairPost(navController: NavController, memberViewModel: memberViewModel, member: String){
+fun assetsgroupmemberpairPost(navController: NavController, memberViewModel: memberViewModel, member: String, targetasset: Int){
 
     val url = "http://172.10.8.235"
 
@@ -27,10 +27,8 @@ fun assetsgroupmemberpairPost(navController: NavController, memberViewModel: mem
     var server = retrofit.create(serverAPIInterface::class.java)
 
     val group_id = memberViewModel.group_id.value
-    Log.d("Check098", "Comes here")
     group_id?.let {
-        Log.d("Check098", "Not null group id")
-        server.postAssetsGroupMemberPair(assetsgroupmemberpair(it, member)).enqueue(object : Callback<ResponseDC> {
+        server.postAssetsGroupMemberPair(assetsgroupmemberpair(it, member, targetasset, targetasset)).enqueue(object : Callback<ResponseDC> {
             override fun onResponse(call: Call<ResponseDC>, response: Response<ResponseDC>) {
                 if (response.isSuccessful) {
                 } else {
@@ -40,5 +38,4 @@ fun assetsgroupmemberpairPost(navController: NavController, memberViewModel: mem
             }
         })
     }
-    Log.d("Check098", "Pass")
 }
