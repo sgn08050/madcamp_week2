@@ -46,6 +46,8 @@ import com.example.madcamp_week2.ui.theme.TotalBackgroundColor
 import middleTitleTextStyle
 import plainTextStyle
 import smallPlainTextStyle
+import java.text.NumberFormat
+import java.util.Locale
 
 // ※ sendCrewData format : [ Name, Destination, Group Tag, Target Money, Friends ]
 
@@ -159,7 +161,7 @@ fun CrewCardMoney(assetsgroupInformation: assetsgroupInformation) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = assetsgroupInformation.currentasset.toString(),
+                    text = NumberFormat.getNumberInstance(Locale.getDefault()).format(assetsgroupInformation.currentasset.toString()),
 
                     style = bigTitleTextStyle
                 )
@@ -200,7 +202,7 @@ fun CrewCardMoney(assetsgroupInformation: assetsgroupInformation) {
                     color = Color.Gray
                 )
                 Text(
-                    text = assetsgroupInformation.targetasset.toString(),
+                    text = NumberFormat.getNumberInstance(Locale.getDefault()).format(assetsgroupInformation.targetasset.toString()),
                     style = smallPlainTextStyle,
                     color = Color.Gray
                 )
@@ -217,7 +219,7 @@ fun CrewCardMoney(assetsgroupInformation: assetsgroupInformation) {
 
 fun CalculateMoney(TarMoney:Int, RemainMoney: Int) : List<Float> {
 
-    var RemainMoneyRate = (TarMoney - RemainMoney).toFloat()/TarMoney.toFloat()
+    var RemainMoneyRate = if(TarMoney == 0) 0.toFloat() else (TarMoney - RemainMoney).toFloat()/TarMoney.toFloat()
 
     return listOf((TarMoney - RemainMoney).toFloat(), RemainMoneyRate)
 }
